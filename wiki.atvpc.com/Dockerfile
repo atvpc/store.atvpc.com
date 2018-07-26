@@ -1,6 +1,3 @@
-FROM php:fpm-alpine
-
-RUN ln -sf /dev/stdout /var/log/nginx/access.log && \
-    ln -sf /dev/stderr /var/log/nginx/error.log
-
-
+FROM php:apache
+RUN chown root:www-data -R /var/www/html
+RUN chmod g+w -R /var/www/html
