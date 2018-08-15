@@ -19,3 +19,5 @@ run:
 	docker run --net dockernet --ip 172.18.0.50 -d www
 	docker run --net dockernet -p 80:80 -d haproxy
 
+stop:
+	docker stop $(docker ps -aq)
