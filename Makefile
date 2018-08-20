@@ -1,9 +1,7 @@
 git:
 ifneq ($(wildcard ./www.atvpc.com/htdocs/.),)
-	cd www.atvpc.com/htdocs
-	git pull
-	cd www.atvpc.com/htdocs/xpaxle
-	git pull
+	cd www.atvpc.com/htdocs ; git pull
+	cd www.atvpc.com/htdocs/xpaxle ; git pull
 else
 	git clone https://github.com/atvpc/atvpc.com.git www.atvpc.com/htdocs
 	git clone https://github.com/atvpc/xpaxle-page.git www.atvpc.com/htdocs/xpaxle
