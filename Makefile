@@ -31,7 +31,7 @@ build-all: build-www build-wiki build-haproxy
 	
 run-all: run-www run-wiki run-haproxy
 
-stop:
+stop-all:
 	-docker ps -aq | xargs docker stop
 
 stop-haproxy:
