@@ -18,4 +18,4 @@ run:
 	docker run --net dockernet -p 80:80 -d haproxy
 
 stop:
-	docker stop $(docker ps -aq)
+	-docker ps -aq | xargs docker stop
