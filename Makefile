@@ -1,6 +1,18 @@
 create-network:
 	-docker network create --subnet=172.18.0.0/16 dockernet
 
+stop-haproxy:
+	docker container ls | grep haproxy | awk '{print $1}' | xargs docker stop
+
+stop-wiki:
+	docker container ls | grep wiki | awk '{print $1}' | xargs docker stop
+
+stop-www:
+	docker container ls | grep www | awk '{print $1}' | xargs docker stop
+
+stop-all:
+	-docker ps -aq | xargs docker stop
+
 build-haproxy:
 	docker build -t haproxy ./haproxy
 
@@ -15,27 +27,26 @@ else
 	git clone https://github.com/atvpc/atvpc.com.git www.atvpc.com/htdocs
 	git clone https://github.com/atvpc/xpaxle-page.git www.atvpc.com/htdocs/xpaxle
 endif
-
 	-docker build -t www ./www.atvpc.com
 
-run-www: run-haproxy
+build-all: build-www build-wiki build-haproxy
+
+
+
+
+run-www: stop-www run-haproxy
 	-docker run --net dockernet --ip 172.18.0.50 -d www
 
-run-wiki: run-haproxy
+run-wiki: stop-wiki run-haproxy
 	-docker run --net dockernet --ip 172.18.0.10 -v /srv/wiki.atvpc.com/htdocs:/var/www/html -d wiki
 
-run-haproxy: create-network
+run-haproxy: stop-haproxy create-network
 	-docker run --net dockernet -p 80:80 -d haproxy
 
-build-all: build-www build-wiki build-haproxy
-	
 run-all: run-www run-wiki run-haproxy
 
-stop-all:
-	-docker ps -aq | xargs docker stop
 
-stop-haproxy:
-	docker container ls | grep haproxy | awk '{print $1}' | xargs docker stop
+
 
 certbot-new:
 	docker run -it --rm --name certbot --net dockernet --ip 172.18.0.20 -v "/srv/certbot/etc:/etc/letsencrypt" \
