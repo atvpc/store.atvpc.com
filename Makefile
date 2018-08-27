@@ -2,13 +2,13 @@ create-network:
 	-docker network create --subnet=172.18.0.0/16 dockernet
 
 stop-haproxy:
-	docker container ls | grep haproxy | awk '{print $1}' | xargs docker stop
+	-docker container ls | grep haproxy | awk '{print $1}' | xargs docker stop
 
 stop-wiki:
-	docker container ls | grep wiki | awk '{print $1}' | xargs docker stop
+	-docker container ls | grep wiki | awk '{print $1}' | xargs docker stop
 
 stop-www:
-	docker container ls | grep www | awk '{print $1}' | xargs docker stop
+	-docker container ls | grep www | awk '{print $1}' | xargs docker stop
 
 stop-all:
 	-docker ps -aq | xargs docker stop
