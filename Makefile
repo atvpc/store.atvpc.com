@@ -51,14 +51,14 @@ run-all: run-www run-wiki run-haproxy
 certbot-new:
 	docker run -it --rm --name certbot --net dockernet --ip 172.18.0.20 -v "/srv/certbot/etc:/etc/letsencrypt" \
 	certbot/certbot \
-	certonly --standalone -d wiki.atvpc.com --non-interactive --agree-tos --email admin@atvpc.com --http-01-port=80
+	certonly --standalone -d wiki.atvpc.com --non-interactive --agree-tos --email admin@atvpc.com --http-01-port=8888
 	
 	cat /srv/certbot/etc/live/wiki.atvpc.com/fullchain.pem /srv/certbot/etc/live/wiki.atvpc.com/privkey.pem | sudo tee /srv/certbot/ssl/wiki.atvpc.com.pem
 
 certbot-renew:
 	docker run -it --rm --name certbot --net dockernet --ip 172.18.0.20 -v "/srv/certbot/etc:/etc/letsencrypt" \
 	certbot/certbot \
-	renew --force-renewal --tls-sni-01-port=80
+	renew --force-renewal --tls-sni-01-port=8888
 
 	cat /srv/certbot/etc/live/wiki.atvpc.com/fullchain.pem /srv/certbot/etc/live/wiki.atvpc.com/privkey.pem | sudo tee /srv/certbot/ssl/wiki.atvpc.com.pem
 
