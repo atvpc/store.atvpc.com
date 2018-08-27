@@ -15,7 +15,7 @@ run:
 	-docker network create --subnet=172.18.0.0/16 dockernet
 	docker run --net dockernet --ip 172.18.0.10 -v /srv/wiki.atvpc.com/htdocs:/var/www/html -d wiki
 	docker run --net dockernet --ip 172.18.0.50 -d www
-	docker run --net dockernet -p 80:80 -d haproxy
+	docker run --net dockernet -p 80:80 -p 443:443 -v /srv/certbot/ssl:/etc/ssl -d haproxy
 
 certbot-new:
 	docker run -it --rm --name certbot --net dockernet --ip 172.18.0.20 -v "/srv/certbot/etc:/etc/letsencrypt" \
