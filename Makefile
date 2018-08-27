@@ -35,13 +35,13 @@ build-all: build-www build-wiki build-haproxy
 
 
 run-www: stop-www run-haproxy
-	-docker run --net dockernet --ip 172.18.0.50 -d www
+	docker run --net dockernet --ip 172.18.0.50 -d www
 
 run-wiki: stop-wiki run-haproxy
-	-docker run --net dockernet --ip 172.18.0.10 -v /srv/wiki.atvpc.com/htdocs:/var/www/html -d wiki
+	docker run --net dockernet --ip 172.18.0.10 -v /srv/wiki.atvpc.com/htdocs:/var/www/html -d wiki
 
 run-haproxy: stop-haproxy create-network
-	-docker run --net dockernet -p 80:80 -d haproxy
+	docker run --net dockernet -p 80:80 -p 443:443 -v /srv/certbot/ssl:/etc/ssl -d haproxy
 
 run-all: run-www run-wiki run-haproxy
 
