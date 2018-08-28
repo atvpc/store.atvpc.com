@@ -1,3 +1,5 @@
 wiki.atvpc.com/htdocs
 www.atvpc.com/htdocs
-certbot
+certbot/data
+haproxy/data
+mariadb/data
