@@ -1,5 +1,6 @@
 wiki.atvpc.com/htdocs
 www.atvpc.com/htdocs
-certbot/data
-haproxy/data
-mariadb/data
+data/certbot
+data/mariadb
+data/magento
+secrets
