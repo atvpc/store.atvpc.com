@@ -33,22 +33,24 @@ build-wiki:
 	docker build -t wiki ./wiki.atvpc.com
 
 build-www:
-ifneq ($(wildcard ./www.atvpc.com/htdocs/.),)
-	cd www.atvpc.com/htdocs ; git pull
-	cd www.atvpc.com/htdocs/xpaxle ; git pull
+ifneq ($(wildcard ./data/www/.),)
+	cd data/www ; git pull
+	cd data/www/xpaxle ; git pull
 else
-	git clone https://github.com/atvpc/atvpc.com.git www.atvpc.com/htdocs
-	git clone https://github.com/atvpc/xpaxle-page.git www.atvpc.com/htdocs/xpaxle
+	git clone https://github.com/atvpc/atvpc.com.git data/www
+	git clone https://github.com/atvpc/xpaxle-page.git data/www/xpaxle
 endif
-	docker build -t www ./www.atvpc.com
 
 build-all: build-www build-wiki build-haproxy
 
 
-run-www: stop-www run-haproxy
-	docker run --net dockernet --ip 172.18.0.50 -d www
+run-www: stop-www
+	docker run -d --name www \
+	--net dockernet --ip 172.18.0.50 \
+	-v /srv/data/www:/var/www/html \
+	php:apache
 
-run-wiki: stop-wiki run-haproxy
+run-wiki: stop-wiki
 	docker run --net dockernet --ip 172.18.0.10 -v /srv/wiki.atvpc.com/htdocs:/var/www/html -d wiki
 
 run-haproxy: stop-haproxy create-network
@@ -85,6 +87,8 @@ certbot-new:
 	--net dockernet --ip 172.18.0.20 \
 	-v "/srv/data/certbot:/etc/letsencrypt" \
 	certbot/certbot certonly --standalone --non-interactive --expand --agree-tos --email admin@atvpc.com --http-01-port=8888 \
+    -d atvpartsconnection.com \
+    -d atvpc.com \
 	-d wiki.atvpc.com \
 	-d store.atvpc.com
 
