@@ -88,7 +88,9 @@ certbot-new:
 	-v "/srv/data/certbot:/etc/letsencrypt" \
 	certbot/certbot certonly --standalone --non-interactive --expand --agree-tos --email admin@atvpc.com --http-01-port=8888 \
     -d atvpartsconnection.com \
+    -d www.atvpartsconnection.com \
     -d atvpc.com \
+    -d www.atvpc.com \
 	-d wiki.atvpc.com \
 	-d store.atvpc.com
 
