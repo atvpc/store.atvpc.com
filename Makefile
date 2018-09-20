@@ -71,6 +71,27 @@ run-mariadb:
 	-v /srv/data/mariadb:/var/lib/mysql \
 	mariadb:latest
 
+run-zabbix-server:
+	docker start zabbix-server || docker run -d --name zabbix-server \
+	--net dockernet --ip 172.18.0.250 -p 10051:10051 \
+	-e DB_SERVER_HOST=172.18.0.30 \
+	-e MYSQL_ROOT_PASSWORD=$(MYSQL_ROOT_PASS) \
+	-e MYSQL_DATABASE=$(ZABBIXDB_NAME) \
+	-e MYSQL_USER=$(ZABBIXDB_USER) \
+	-e MYSQL_PASSWORD=$(ZABBIXDB_PASS) \
+	zabbix/zabbix-server-mysql:alpine-latest
+
+run-zabbix-frontend:
+	docker start zabbix-frontend || docker run -d --name zabbix-frontend \
+	--net dockernet --ip 172.18.0.200 \
+	-e ZBX_SERVER_HOST=172.18.0.250 \
+	-e PHP_TZ=America/New_York \
+	-e DB_SERVER_HOST=172.18.0.30 \
+	-e MYSQL_DATABASE=$(ZABBIXDB_NAME) \
+	-e MYSQL_USER=$(ZABBIXDB_USER) \
+	-e MYSQL_PASSWORD=$(ZABBIXDB_PASS) \
+	zabbix/zabbix-web-nginx-mysql:alpine-latest
+
 run-magento:
 	docker start magento || docker run -d --name magento \
 	--net dockernet --ip 172.18.0.60 \
