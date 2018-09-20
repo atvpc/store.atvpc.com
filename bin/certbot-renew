@@ -1,1 +1,1 @@
-../data/host/certbot/etc/cron.weekly/certbot-renew
+../dotfiles/certbot/etc/cron.weekly/certbot-renew
