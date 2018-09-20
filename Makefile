@@ -100,15 +100,7 @@ certbot-new:
 
 	sudo bash -c "cat /srv/data/certbot/live/wiki.atvpc.com/fullchain.pem /srv/data/certbot/live/wiki.atvpc.com/privkey.pem > /srv/secrets/ssl/atvpc.com.pem"
 
-certbot-renew:
-        docker run -it --rm --name certbot \
-        --net dockernet --ip 172.18.0.20 \
-        -v "/srv/data/certbot:/etc/letsencrypt" \
-        certbot/certbot renew --force-renewal --tls-sni-01-port=8888
-
-        sudo bash -c "cat /srv/data/certbot/live/wiki.atvpc.com/fullchain.pem /srv/data/certbot/live/wiki.atvpc.com/privkey.pem > /srv/secrets/ssl/atvpc.com.pem"
-
 certbot-renew: certbot-bin stop-haproxy run-haproxy
 
-renew-cert: certbot-renew stop-haproxy build-haproxy run-haproxy
-
+certbot-bin:
+	sudo ./bin/certbot-renew
