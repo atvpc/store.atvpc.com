@@ -92,7 +92,9 @@ run-zabbix-frontend:
 	-e MYSQL_PASSWORD=$(ZABBIXDB_PASS) \
 	zabbix/zabbix-web-nginx-mysql:alpine-latest
 
-run-magento:
+run-zabbix: run-mariadb run-zabbix-server run-zabbix-frontend
+
+run-magento: run-mariadb
 	docker start magento || docker run -d --name magento \
 	--net dockernet --ip 172.18.0.60 \
     -e MARIADB_HOST=172.18.0.30 \
@@ -104,7 +106,7 @@ run-magento:
 	-v /srv/data/magento:/bitnami \
 	bitnami/magento:latest
 
-run-all: run-www run-wiki run-mariadb run-haproxy
+run-all: run-www run-wiki run-mariadb run-magento run-zabbix run-haproxy
 
 
 certbot-new:
