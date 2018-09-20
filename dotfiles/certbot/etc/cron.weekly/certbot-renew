@@ -1,0 +1,13 @@
+#!/bin/bash
+
+if [ "$(id -u)" != "0" ]; then
+    echo "This script must run as root"
+    exit 1
+fi
+
+docker run -it --rm \
+    --net dockernet --ip 172.18.0.20 \
+    -v "/srv/data/certbot:/etc/letsencrypt" \
+    certbot/certbot renew --force-renewal --tls-sni-01-port=8888
+
+bash -c "cat /srv/data/certbot/live/wiki.atvpc.com/fullchain.pem /srv/data/certbot/live/wiki.atvpc.com/privkey.pem > /srv/secrets/ssl/atvpc.com.pem"
