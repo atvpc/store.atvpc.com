@@ -6,12 +6,13 @@
 # mariadb (sql server):   172.18.0.30
 # www:                    172.18.0.50
 # magento (webstore):     172.18.0.60
+# zabbix (frontend)       172.18.0.200
+# zabbix (server)         172.18.0.250
 
 include secrets/passwords
 
 create-network:
 	-docker network create --subnet=172.18.0.0/16 dockernet
-
 
 stop-haproxy:
 	-docker container ls | grep haproxy | awk '{print $$1}' | xargs docker stop
@@ -44,31 +45,34 @@ endif
 build-all: build-www build-wiki build-haproxy
 
 
-run-www: stop-www
-	docker run -d --name www \
+run-www:
+	docker start www || docker run -d --name www \
 	--net dockernet --ip 172.18.0.50 \
 	-v /srv/data/www:/var/www/html \
 	php:apache
 
-run-wiki: stop-wiki
-	docker run --net dockernet --ip 172.18.0.10 -v /srv/wiki.atvpc.com/htdocs:/var/www/html -d wiki
+run-wiki:
+	docker start wiki || docker run -d --name wiki \
+	--net dockernet --ip 172.18.0.10 \
+	-v /srv/wiki.atvpc.com/htdocs:/var/www/html \
+	wiki
 
 run-haproxy: stop-haproxy create-network
-	docker run -d --name haproxy \
+	docker start haproxy || docker run -d --name haproxy \
 	--net dockernet -p 80:80 -p 443:443 \
 	-v /srv/secrets/ssl:/etc/ssl \
 	-v /srv/data/haproxy:/usr/local/etc/haproxy \
 	haproxy:alpine
 
 run-mariadb:
-	docker run -d --name mariadb \
+	docker start mariadb || docker run -d --name mariadb \
 	--net dockernet --ip 172.18.0.30 \
 	-e MYSQL_ROOT_PASSWORD=$(MYSQL_ROOT_PASS) \
 	-v /srv/data/mariadb:/var/lib/mysql \
 	mariadb:latest
 
 run-magento:
-	docker run -d --name magento \
+	docker start magento || docker run -d --name magento \
 	--net dockernet --ip 172.18.0.60 \
     -e MARIADB_HOST=172.18.0.30 \
     -e MARIADB_ROOT_PASSWORD=$(MYSQL_ROOT_PASS) \
@@ -97,11 +101,14 @@ certbot-new:
 	sudo bash -c "cat /srv/data/certbot/live/wiki.atvpc.com/fullchain.pem /srv/data/certbot/live/wiki.atvpc.com/privkey.pem > /srv/secrets/ssl/atvpc.com.pem"
 
 certbot-renew:
-	docker run -it --rm --name certbot \
-	--net dockernet --ip 172.18.0.20 \
-	-v "/srv/data/certbot:/etc/letsencrypt" \
-	certbot/certbot renew --force-renewal --tls-sni-01-port=8888
+        docker run -it --rm --name certbot \
+        --net dockernet --ip 172.18.0.20 \
+        -v "/srv/data/certbot:/etc/letsencrypt" \
+        certbot/certbot renew --force-renewal --tls-sni-01-port=8888
 
-	sudo bash -c "cat /srv/data/certbot/live/wiki.atvpc.com/fullchain.pem /srv/data/certbot/live/wiki.atvpc.com/privkey.pem > /srv/secrets/ssl/atvpc.com.pem"
+        sudo bash -c "cat /srv/data/certbot/live/wiki.atvpc.com/fullchain.pem /srv/data/certbot/live/wiki.atvpc.com/privkey.pem > /srv/secrets/ssl/atvpc.com.pem"
+
+certbot-renew: certbot-bin stop-haproxy run-haproxy
 
 renew-cert: certbot-renew stop-haproxy build-haproxy run-haproxy
+
