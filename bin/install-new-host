@@ -34,4 +34,14 @@ apt install $(< package-list.txt)
 
 # Setup configs
 cd /srv/data/host
+stow -t / certbot
 stow -t / zabbix
+stow -t / apt
+
+# Setup firewall
+ufw allow 22/tcp
+ufw allow proto tcp from any to any port 80,443
+ufw allow from 172.18.0.250 to any port 10050
+ufw allow from 50.249.20.86 to any port 10051
+systemctl enable ufw
+systemctl start ufw
