@@ -53,9 +53,9 @@ run-www:
 
 run-wiki:
 	docker start wiki || docker run -d --name wiki \
-	--net dockernet --ip 172.18.0.10 --hostname cvr-wiki \
+	--net dockernet --ip 172.18.0.10 -h docker-wiki \
 	-v /srv/wiki.atvpc.com/htdocs:/var/www/html \
-	wiki
+	wiki:latest
 
 run-haproxy: stop-haproxy create-network
 	docker start haproxy || docker run -d --name haproxy \
