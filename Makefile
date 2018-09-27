@@ -15,6 +15,7 @@ include secrets/passwords
 create-network:
 	-docker network create --subnet=172.18.0.0/16 dockernet
 
+
 stop-haproxy:
 	-docker container ls | grep haproxy | awk '{print $$1}' | xargs docker stop
 
@@ -53,39 +54,39 @@ endif
 build-all: build-www build-www-cvr build-wiki build-haproxy
 
 
-run-www-atvpc:
+start-www-atvpc:
 	docker start www || docker run -d --name www \
 	--net dockernet --ip 172.18.0.50 \
 	-v /srv/data/www:/var/www/html \
 	php:apache
 
-run-wiki:
+start-wiki:
 	docker start wiki || docker run -d --name wiki \
 	--net dockernet --ip 172.18.0.10 -h docker-wiki \
 	-v /srv/wiki.atvpc.com/htdocs:/var/www/html \
 	wiki:latest
 
-run-www-cvr:
+start-www-cvr:
 	docker start www-cvr || docker run -d --name www-cvr \
 	--net dockernet --ip 172.18.0.70 -h docker-www-cvr \
 	-v /srv/data/cvr:/var/www/html \
 	wiki:latest
 
-run-haproxy: stop-haproxy create-network
+start-haproxy: stop-haproxy create-network
 	docker start haproxy || docker run -d --name haproxy \
 	--net dockernet -p 80:80 -p 443:443 \
 	-v /srv/secrets/ssl:/etc/ssl \
 	-v /srv/data/haproxy:/usr/local/etc/haproxy \
 	haproxy:alpine
 
-run-mariadb:
+start-mariadb:
 	docker start mariadb || docker run -d --name mariadb \
 	--net dockernet --ip 172.18.0.30 \
 	-e MYSQL_ROOT_PASSWORD=$(MYSQL_ROOT_PASS) \
 	-v /srv/data/mariadb:/var/lib/mysql \
 	mariadb:latest
 
-run-zabbix-server:
+start-zabbix-server:
 	docker start zabbix-server || docker run -d --name zabbix-server \
 	--net dockernet --ip 172.18.0.250 -p 10051:10051 \
 	-e DB_SERVER_HOST=172.18.0.30 \
@@ -95,7 +96,7 @@ run-zabbix-server:
 	-e MYSQL_PASSWORD=$(ZABBIXDB_PASS) \
 	zabbix/zabbix-server-mysql:alpine-latest
 
-run-zabbix-frontend:
+start-zabbix-frontend:
 	docker start zabbix-frontend || docker run -d --name zabbix-frontend \
 	--net dockernet --ip 172.18.0.200 \
 	-e ZBX_SERVER_HOST=172.18.0.250 \
@@ -106,9 +107,7 @@ run-zabbix-frontend:
 	-e MYSQL_PASSWORD=$(ZABBIXDB_PASS) \
 	zabbix/zabbix-web-nginx-mysql:alpine-latest
 
-run-zabbix: run-mariadb run-zabbix-server run-zabbix-frontend
-
-run-magento: run-mariadb
+start-magento: start-mariadb
 	docker start magento || docker run -d --name magento \
 	--net dockernet --ip 172.18.0.60 \
     -e MARIADB_HOST=172.18.0.30 \
@@ -120,7 +119,8 @@ run-magento: run-mariadb
 	-v /srv/data/magento:/bitnami \
 	bitnami/magento:latest
 
-run-all: run-www-atvpc run-www-cvr run-wiki run-mariadb run-magento run-zabbix run-haproxy
+start-zabbix: start-mariadb start-zabbix-server start-zabbix-frontend
+start-all: start-www-atvpc start-www-cvr start-wiki start-mariadb start-magento start-zabbix start-haproxy
 
 
 certbot-new:
