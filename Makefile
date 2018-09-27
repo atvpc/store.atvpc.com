@@ -4,8 +4,9 @@
 # wiki (dokuwiki):        172.18.0.10
 # certbot (lets encrypt): 172.18.0.20
 # mariadb (sql server):   172.18.0.30
-# www:                    172.18.0.50
+# (www) atvpc             172.18.0.50
 # magento (webstore):     172.18.0.60
+# (www) cvr               172.18.0.70
 # zabbix (frontend)       172.18.0.200
 # zabbix (server)         172.18.0.250
 
@@ -33,7 +34,7 @@ stop-all:
 build-wiki:
 	docker build -t wiki ./wiki.atvpc.com
 
-build-www:
+build-www-atvpc:
 ifneq ($(wildcard ./data/www/.),)
 	cd data/www ; git pull
 	cd data/www/xpaxle ; git pull
@@ -42,10 +43,17 @@ else
 	git clone https://github.com/atvpc/xpaxle-page.git data/www/xpaxle
 endif
 
-build-all: build-www build-wiki build-haproxy
+build-www-cvr:
+ifneq ($(wildcard ./data/cvr/.),)
+	cd data/cvr ; git pull
+else
+	git clone https://github.com/atvpc/cvrcorp.com.git data/cvr
+endif
+
+build-all: build-www build-www-cvr build-wiki build-haproxy
 
 
-run-www:
+run-www-atvpc:
 	docker start www || docker run -d --name www \
 	--net dockernet --ip 172.18.0.50 \
 	-v /srv/data/www:/var/www/html \
@@ -55,6 +63,12 @@ run-wiki:
 	docker start wiki || docker run -d --name wiki \
 	--net dockernet --ip 172.18.0.10 -h docker-wiki \
 	-v /srv/wiki.atvpc.com/htdocs:/var/www/html \
+	wiki:latest
+
+run-www-cvr:
+	docker start www-cvr || docker run -d --name www-cvr \
+	--net dockernet --ip 172.18.0.70 -h docker-www-cvr \
+	-v /srv/data/cvr:/var/www/html \
 	wiki:latest
 
 run-haproxy: stop-haproxy create-network
@@ -106,7 +120,7 @@ run-magento: run-mariadb
 	-v /srv/data/magento:/bitnami \
 	bitnami/magento:latest
 
-run-all: run-www run-wiki run-mariadb run-magento run-zabbix run-haproxy
+run-all: run-www-atvpc run-www-cvr run-wiki run-mariadb run-magento run-zabbix run-haproxy
 
 
 certbot-new:

@@ -3,4 +3,5 @@ data/certbot
 data/mariadb
 data/magento
 data/www
+data/cvr
 secrets
