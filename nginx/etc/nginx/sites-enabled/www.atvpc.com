@@ -2,7 +2,6 @@ server {
 	listen 80;
 	listen [::]:80;
 	server_name atvpc.com;
-	return 301 http://www.atvpc.com$request_uri;
 
     listen [::]:443 ssl ipv6only=on; # managed by Certbot
     listen 443 ssl; # managed by Certbot
@@ -11,6 +10,13 @@ server {
     include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
 
+
+	if ($scheme = http) {
+		return 301 http://www.atvpc.com$request_uri;
+	}
+	if ($scheme = https) {
+		return 301 https://www.atvpc.com$request_uri;
+	}
 }
 
 server {
