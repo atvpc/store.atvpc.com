@@ -20,4 +20,10 @@ server {
 	location ~ /\.ht {
 		deny all;
 	}
+
+	# secure dokuwiki
+	location ~ /(data|conf|bin|inc)/ {
+		deny all;
+	}
 }
+
