@@ -20,10 +20,13 @@ server {
 	server_tokens off;
 
 	root /srv/htdocs/atvpc.com;
-	index index.php;
+	index index.php index.html;
 
-	location / {
-		try_files $uri $uri/ =404;
+	error_page 404 /index.php?404;
+
+	# secure PicoCMS
+	location ~ ^/((config|content|vendor|composer\.(json|lock|phar))(/|$)|(.+/)?\.(?!well-known(/|$))) {
+		try_files /index.php$is_args$args =404;
 	}
 
 	location ~ \.php$ {
@@ -31,7 +34,7 @@ server {
 		fastcgi_pass unix:/run/php/php7.2-fpm.sock;
 	}
 
-	location ~ /\.ht {
-		deny all;
+	location / {
+		try_files $uri $uri/ =404;
 	}
 }
