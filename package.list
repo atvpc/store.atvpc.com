@@ -1,7 +1,9 @@
+certbot
 fail2ban
 netdata
 nginx
 php-fpm
 php7.2-mbstring
 php7.2-xml
+python-certbot-nginx
 stow

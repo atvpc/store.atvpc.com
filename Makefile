@@ -19,3 +19,6 @@ firewall:
 	sudo ufw allow ssh
 	sudo ufw allow "Nginx Full"
 	sudo ufw enable
+
+certbot:
+	sudo certbot --nginx -d atvpc.com -d www.atvpc.com -d wiki.atvpc.com
