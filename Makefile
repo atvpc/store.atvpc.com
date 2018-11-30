@@ -8,4 +8,4 @@ first-run:
 
 stow:
 	sudo stow -t / nginx php git
-	sudo systemctl restart php7.2-fpm nginx
+	sudo systemctl restart php7.2-fpm nginx netdata
