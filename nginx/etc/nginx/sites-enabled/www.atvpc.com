@@ -1,10 +1,14 @@
 server {
 	listen 80;
 	listen [::]:80;
-
 	server_name atvpc.com;
-	server_tokens off;
+	return 301 http://www.atvpc.com$request_uri;
+}
 
+server {
+	listen 80;
+	listen [::]:80;
+	server_name atvpartsconnection.com;
 	return 301 http://www.atvpc.com$request_uri;
 }
 
