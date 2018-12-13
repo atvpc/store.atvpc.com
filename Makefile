@@ -1,7 +1,7 @@
 HOSTNAME := $(shell hostname)
 USER := $(shell whoami)
 
-first-run: update secure $(HOSTNAME)
+first-run: update all $(HOSTNAME)
 
 update:
 	xargs -a ./pkginstall/remove.list sudo apt purge
