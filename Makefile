@@ -1,4 +1,5 @@
 HOSTNAME := $(shell hostname)
+USER := $(shell whoami)
 
 first-run: update secure $(HOSTNAME)
 
@@ -15,6 +16,7 @@ update:
 	sudo apt autoremove
 
 all:
+	stow -t /home/$(USER) user
 	sudo stow -t / all-hosts
 	sudo grub-mkconfig --output /boot/grub/grub.cfg
 	sudo systemctl restart netdata fail2ban
