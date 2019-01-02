@@ -1,0 +1,4 @@
+#!/bin/bash
+
+mogrify -resize 800x600 *.jpg && \
+jpegoptim -m90 *.jpg
