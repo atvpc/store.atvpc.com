@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [ $# -eq 0 ]; then
+	echo "runs an interactive shell in a docker image for debugging"
+	echo
+	echo "Usage:"
+	echo "   $0 [CONTAINER NAME]"
+	exit 1
+fi
+
+ID=$(docker container ls | grep $1 | awk '{print $1}')
+docker exec -i -t $ID /bin/bash

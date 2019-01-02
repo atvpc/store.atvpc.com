@@ -1,0 +1,20 @@
+#!/bin/bash
+
+DIR="$HOME/backups"
+
+if [ ! -f "$DIR/www-$(date +%F).log" ]; then
+	ssh www.atvpc.com 'mkdir -p /home/$(whoami)/backups'
+	ssh www.atvpc.com 'tar --exclude=/srv/lost+found -cvJf "/home/$(whoami)/backups/www-$(date +%F).txz" /srv > /home/$(whoami)/backups/www-$(date +%F).log'
+	scp www.atvpc.com:backups/www-$(date +%F).{txz,log} $DIR/
+fi
+
+if [ ! -f "$DIR/store-$(date +%F).log" ]; then
+	ssh store.atvpc.com 'mkdir -p /home/$(whoami)/backups'
+	ssh store.atvpc.com 'tar --exclude=/srv/lost+found -cvJf "/home/$(whoami)/backups/store-$(date +%F).txz" /srv > /home/$(whoami)/backups/store-$(date +%F).log'
+	scp store.atvpc.com:backups/store-$(date +%F).{txz,log} $DIR/
+fi
+
+if [ ! -f "$DIR/mariadb-$(date +%F).sql.xz" ]; then
+	ssh store.atvpc.com 'mysqldump --all-databases | xz > /home/$(whoami)/backups/mariadb-$(date +%F).sql.xz'
+	scp store.atvpc.com:backups/mariadb-$(date +%F).sql.xz $DIR/
+fi
