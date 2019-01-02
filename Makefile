@@ -34,3 +34,17 @@ www.atvpc.com:
 
 	sudo certbot --nginx -d atvpc.com -d www.atvpc.com -d wiki.atvpc.com
 	sudo systemctl restart nginx
+
+store.atvpc.com:
+	sudo stow -t / store.atvpc.com
+
+	sudo add-apt-repository ppa:ondrej/php
+	sudo apt update
+	xargs -a ./pkginstall/magento-php7.1-workaround.list sudo apt install
+
+	sudo systemctl enable nginx mariadb php7.1-fpm redis-server
+	sudo systemctl restart nginx mariadb php7.1-fpm redis-server
+
+	sudo ufw allow "Nginx Full"
+	sudo certbot --nginx -d store.atvpc.com
+	sudo systemctl restart nginx
