@@ -17,9 +17,12 @@ update:
 
 all:
 	stow -t /home/$(USER) user
+
+	sudo rm /etc/ssh/sshd_config
+	sudo rm /etc/default/motd-news
 	sudo stow -t / all-hosts
-	sudo grub-mkconfig --output /boot/grub/grub.cfg
-	sudo systemctl restart netdata fail2ban
+
+	sudo systemctl restart netdata fail2ban sshd
 	sudo ufw allow ssh
 	sudo ufw enable
 
