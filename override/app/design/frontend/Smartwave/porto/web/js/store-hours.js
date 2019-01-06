@@ -131,52 +131,65 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
     if (typeof holidays[holidayExactDate] != "undefined") { 
         /* floating day holidays, like easter and thanksgiving */
-        image = "closed.png";
+        status = "closed";
         hover  = "Sorry, we're closed for " + holidays[holidayExactDate];
     }
     else if (typeof holidays[holidayEveryYear] != "undefined") { 
         /* holidays on the same day, like christmas */
-        image = "closed.png";
+        status = "closed";
         hover  = "Sorry, we're closed for " + holidays[holidayEveryYear];
     }
     else {
         /* regular days, non-holiday */
         if (hours[day].open === hours[day].close) {
-            image = "closed.png";
+            status = "closed";
             hover = "Sorry, we're closed on " + dayName(day) + "s";
         }
         else if (time < hours[day].open) {
-            image = "closed.png";
+            status = "closed";
             hover = "We will open today at " + prettyTime( hours[day].open );
         }
         else if (time >= hours[day].close) {
-            image = "closed.png";
+            status = "closed";
             hover  = "Sorry, we're closed for the day";
         }
         else if ( (time - hours[day].open) <= 30 ) {
-            image = "opening.png";
+            status = "opening";
             hover = "If you call is not answered, please try back in a few minutes";
         }
         else if (hours[day].close - time - 40 <= 15) {
-            image = "closing.png";
+            status = "closing";
             hover = "Technical assistance and returns may be asked to call back on the next business day";
         }
         else {
-			if (hours[day].shipping === 0 || time >= hours[day].shipping) {
-				image = "open-shipping-closed.png";
-			}
-			else {
-				image = "open.png";
-			}
-			
-            hover = "Have a question? Call us, we're open!";
+		if (hours[day].shipping === 0 || time >= hours[day].shipping) {
+			image = "open-shipping-closed";
+		}
+		else {
+			image = "open";
+		}
+
+		hover = "Have a question? Call us, we're open!";
         }
     }
 
     /* HTML OUTPUT */
-    var el = document.querySelector("#open-closed");
-    el.setAttribute("title", hover);
-    el.setAttribute("src", "/images/status-" + image);
+    var eltext = document.querySelector("#open-closed-text");
+    var elimg = document.querySelector("#open-closed-img");
+
+    elimg.setAttribute("title", hover);
+    elimg.setAttribute("src", "images/status-" + status + ".png");
+
+    if (status != "closed") {
+    	/* don't care about opening, closing, etc */
+    	status = "open";
+    	var color = eltext.getAttribute('data-open-color');
+    	var text  = eltext.getAttribute('data-open-text');
+    }
+
+    eltext.setAttribute("title", hover);
+    eltext.setAttribute("style", "color: " + eltext.getAttribute("data-" + status + "-color"));
+    eltext.innerHTML = eltext.getAttribute("data-" + status + "-text");
 });
 
 
