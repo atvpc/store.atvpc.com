@@ -178,7 +178,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     var elimg = document.querySelector("#open-closed-img");
 
     elimg.setAttribute("title", hover);
-    elimg.setAttribute("src", "/images/status-" + status + ".png");
+    elimg.setAttribute("src", "/pub/media/store-hours/status-" + status + ".png");
 
     if (status != "closed") {
     	/* don't care about opening, closing, etc */
