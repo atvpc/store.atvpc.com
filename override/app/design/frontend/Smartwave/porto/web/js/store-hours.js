@@ -126,7 +126,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     var holidayEveryYear = "0000-" + nowEST.toISOString().slice(5,10); // 0000-MM-DD
 
     /* OPEN / CLOSED STATUS */
-    var image = "";
+    var status = "";
     var hover = "";
 
     if (typeof holidays[holidayExactDate] != "undefined") { 
@@ -163,10 +163,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
         }
         else {
 		if (hours[day].shipping === 0 || time >= hours[day].shipping) {
-			image = "open-shipping-closed";
+			status = "open-shipping-closed";
 		}
 		else {
-			image = "open";
+			status = "open";
 		}
 
 		hover = "Have a question? Call us, we're open!";
