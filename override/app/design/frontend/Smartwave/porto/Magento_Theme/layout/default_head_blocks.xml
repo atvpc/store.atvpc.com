@@ -13,9 +13,9 @@
         <css src="fancybox/css/jquery.fancybox.css" />
         <css src="icon-fonts/css/porto-icons-codes.css" />
         <css src="icon-fonts/css/animation.css" />
-        <!-- <script src="jquery.js" />
-        <script src="jquery-ui.js" />
-        <script src="fancybox/js/jquery.fancybox.js" /> -->
+        <remove src="jquery.js" />
+        <remove src="jquery-ui.js" />
+        <remove src="fancybox/js/jquery.fancybox.js" />
         <script src="js/store-hours.js" />
     </head>
 </page>
