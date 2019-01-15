@@ -1,6 +1,0 @@
-make
-git
-curl
-stow
-zabbix-agent
-tcpd
