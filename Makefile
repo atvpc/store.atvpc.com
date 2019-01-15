@@ -37,6 +37,9 @@ www.atvpc.com:
 
 store.atvpc.com:
 	sudo stow -t / store.atvpc.com
+	sudo chown www-data:www-data -R /srv/htdocs/store.atvpc.com
+	sudo chmod g+rw -R /srv/htdocs/store.atvpc.com
+#	sudo -u www-data php7.1 /srv/htdocs/store.atvpc.com/bin/magento setup:static-content:deploy -f
 
 	sudo add-apt-repository ppa:ondrej/php
 	sudo apt update
