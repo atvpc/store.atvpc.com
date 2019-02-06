@@ -1,4 +1,4 @@
-php7.1-fpm
+libapache2-mod-php7.1
 php7.1-bcmath
 php7.1-mcrypt
 php7.1-curl
@@ -14,3 +14,4 @@ php7.1-common
 php7.1-mbstring
 php7.1-zip
 php7.1-soap
+php7.1-xml

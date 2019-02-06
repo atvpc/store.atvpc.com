@@ -3,7 +3,6 @@ upstream fastcgi_backend {
 }
 
 server {
-
     server_name store.atvpc.com;
 
     set $MAGE_ROOT /srv/htdocs/store.atvpc.com;
@@ -20,13 +19,14 @@ server {
 
     include /srv/htdocs/store.atvpc.com/nginx.conf.sample;
 
+    # start certbot
     listen [::]:443 ssl ipv6only=on; # managed by Certbot
     listen 443 ssl; # managed by Certbot
     ssl_certificate /etc/letsencrypt/live/store.atvpc.com/fullchain.pem; # managed by Certbot
     ssl_certificate_key /etc/letsencrypt/live/store.atvpc.com/privkey.pem; # managed by Certbot
     include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
-
+    # end certbot
 }
 
 
