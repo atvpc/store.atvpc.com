@@ -1,6 +1,10 @@
-[webservers]
-45.79.150.195
-172.104.213.209
+[webstore]
+#172.104.213.209
+store.atvpc.com
+
+[website]
+#45.79.150.195
+www.atvpc.com
 
 [office.atvpc.com]
 50.249.20.86
