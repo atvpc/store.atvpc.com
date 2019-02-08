@@ -1,0 +1,64 @@
+---
+- hosts: www.atvpc.com store.atvpc.com
+  tasks:
+    - name: Remove bloatware
+      become: true
+      become_method: sudo
+      apt: name={{ item }} state=absent
+      with_items:
+        - snapd
+    - name: Update base system
+      become: true
+      become_method: sudo
+      apt:
+        update_cache: yes
+        upgrade: dist
+    - name: Install base packages
+      become: true
+      become_method: sudo
+      apt:
+        name: "{{ item }}"
+        autoremove: yes
+        state: present
+      with_items:
+        - git
+        - fail2ban
+        - netdata
+        - stow
+        - htop
+        - tinc
+    - name: Clone git config repo
+      git:
+        repo: 'https://github.com/atvpc/conf.git'
+        dest: /srv/conf
+    - name: Remove distro files in prep of stow
+      become: true
+      become_method: sudo
+      file:
+        path: "{{ item }}"
+        state: absent
+      with_items:
+        - /etc/default/motd-news
+        - /etc/ssh/sshd_config
+    - name: Stow config
+      become: true
+      become_method: sudo
+      command: stow -t / all-hosts
+      args:
+        chdir: /srv/conf
+    - name: Enable services
+      become: true
+      become_method: sudo
+      systemd: name={{ item }} enabled=yes state=started
+      with_items:
+        - fail2ban
+        - sshd
+        - ufw
+    - name: Allow SSH thru firewall
+      become: true
+      become_method: sudo
+      command: ufw allow ssh
+    - name: Enable Firewall
+      become: true
+      become_method: sudo
+      command: ufw enable

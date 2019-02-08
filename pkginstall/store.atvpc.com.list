@@ -1,7 +1,0 @@
-composer
-mariadb-client
-mariadb-server
-nginx
-redis-server
-software-properties-common
-sendmail
