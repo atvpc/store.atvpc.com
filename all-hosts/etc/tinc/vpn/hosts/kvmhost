@@ -1,5 +1,5 @@
 Address = 50.249.20.86
-Subnet = 10.10.0.4/24
+Subnet = 10.10.0.4/32
 Port = 656
 
 -----BEGIN RSA PUBLIC KEY-----
