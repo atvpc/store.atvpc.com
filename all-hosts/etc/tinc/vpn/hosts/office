@@ -1,5 +1,5 @@
 Address = 50.249.20.86
-Subnet = 10.10.0.3
+Subnet = 10.10.0.3/24
 
 -----BEGIN RSA PUBLIC KEY-----
 MIICCgKCAgEAqyGqy2GgEqqwwooZZ5heAh/NTufT707hGGAro8yo0RSWb8+vBQ4u

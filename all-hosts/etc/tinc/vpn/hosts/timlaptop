@@ -1,4 +1,4 @@
-Subnet = 10.10.0.100
+Subnet = 10.10.0.100/24
 
 -----BEGIN RSA PUBLIC KEY-----
 MIICCgKCAgEArRezt1V0AP1Yt+LjX/9Iq/qhoy4fIwwjAsQFyKw4pplshftl770Z
