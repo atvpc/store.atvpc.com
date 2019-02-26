@@ -1,37 +1,44 @@
-#	$OpenBSD: sshd_config,v 1.101 2017/03/14 07:19:07 djm Exp $
+################################################################################
+# 2019-01-01 Mozilla Recommendations
+# https://infosec.mozilla.org/guidelines/openssh#modern-openssh-67
+################################################################################
 
-# This is the sshd server system-wide configuration file.  See
-# sshd_config(5) for more information.
+# Supported HostKey algorithms by order of preference.
+HostKey /etc/ssh/ssh_host_ed25519_key
+HostKey /etc/ssh/ssh_host_rsa_key
+HostKey /etc/ssh/ssh_host_ecdsa_key
 
-# This sshd was compiled with PATH=/usr/bin:/bin:/usr/sbin:/sbin
+KexAlgorithms curve25519-sha256@libssh.org,ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256
 
-# The strategy used for options in the default sshd_config shipped with
-# OpenSSH is to specify options with their default value where
-# possible, but leave them commented.  Uncommented options override the
-# default value.
+Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr
+
+MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,umac-128@openssh.com
+
+# LogLevel VERBOSE logs user's key fingerprint on login. Needed to have a clear audit track of which key was using to log in.
+LogLevel VERBOSE
+
+################################################################################
+# end mozilla recommendations
+################################################################################
 
 #Port 22
 #AddressFamily any
 #ListenAddress 0.0.0.0
 #ListenAddress ::
 
-#HostKey /etc/ssh/ssh_host_rsa_key
-#HostKey /etc/ssh/ssh_host_ecdsa_key
-#HostKey /etc/ssh/ssh_host_ed25519_key
-
 # Ciphers and keying
 #RekeyLimit default none
 
 # Logging
 #SyslogFacility AUTH
-#LogLevel INFO
+
 
 # Authentication:
 
 LoginGraceTime 30
 PermitRootLogin no
-#StrictModes yes
-#MaxAuthTries 6
+StrictModes yes
+MaxAuthTries 3
 #MaxSessions 10
 
 #PubkeyAuthentication yes
@@ -54,7 +61,7 @@ PermitRootLogin no
 
 # To disable tunneled clear text passwords, change to no here!
 #PasswordAuthentication yes
-#PermitEmptyPasswords no
+PermitEmptyPasswords no
 
 # Change to yes to enable challenge-response passwords (beware issues with
 # some PAM modules and threads)
@@ -96,8 +103,11 @@ PrintMotd no
 #UseLogin no
 #PermitUserEnvironment no
 #Compression delayed
-#ClientAliveInterval 0
-#ClientAliveCountMax 3
+
+# Max of 5 minutes idling before disconnect
+ClientAliveInterval 300
+ClientAliveCountMax 0
+
 #UseDNS no
 #PidFile /var/run/sshd.pid
 #MaxStartups 10:30:100
