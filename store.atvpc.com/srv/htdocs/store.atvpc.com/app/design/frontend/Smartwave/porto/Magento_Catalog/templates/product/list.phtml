@@ -273,17 +273,17 @@ $_lazyload = $this->helper('Smartwave\Porto\Helper\Data')->getConfig('porto_sett
                             </div>
                         <?php endif; ?>
                         <?php if($_category_config['product_price']): ?>
-                        <div class="price-sku">
-                        <?php echo $block->getProductPrice($_product) ?>
-                        <span class="sku"><?php
-				if (strpos($_product->getSku(), '/') !== false) {
-					echo "<span title=\"Includes: " . str_replace('/', ', ', $_product->getSku()) . "\">BUNDLE</span>";
-				}
-				else {
-                        		echo $_product->getSku();
-                        	}
-                        ?></span>
-                        </div>
+                        	<div class="price-sku">
+                        	<?php echo $block->getProductPrice($_product) ?>
+                        	<span class="sku">
+                        	<?php if (strpos($_product->getSku(), '/') !== false): ?>
+					<span title="Includes: <?php echo str_replace('/', ', ', $_product->getSku()); ?>">BUNDLE</span>
+				<?php else: ?>
+                       			<?php echo $_product->getSku(); ?>
+
+                        	<?php endif; ?>
+                        	</span>
+                        	</div>
                         <?php endif; ?>
                         <?php echo $block->getProductDetailsHtml($_product); ?>
                         
