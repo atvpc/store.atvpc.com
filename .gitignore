@@ -1,3 +1,4 @@
 ansible/*.retry
 all-hosts/etc/tinc/vpn/rsa_key.priv
 all-hosts/etc/tinc/vpn/tinc.conf
+all-hosts/etc/ssh/sshd_config.ucf-dist
