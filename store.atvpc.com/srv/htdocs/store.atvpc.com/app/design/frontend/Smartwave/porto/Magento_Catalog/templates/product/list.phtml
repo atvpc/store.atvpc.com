@@ -284,6 +284,9 @@ $_lazyload = $this->helper('Smartwave\Porto\Helper\Data')->getConfig('porto_sett
                         	<?php endif; ?>
                         	</span>
                         	</div>
+							<div class="fitloc" data-sku="<?php echo $_product->getSku(); ?>">
+							<!-- populated by js -->
+							</div>
                         <?php endif; ?>
                         <?php echo $block->getProductDetailsHtml($_product); ?>
                         
