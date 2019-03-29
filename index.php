@@ -28,7 +28,7 @@
 			$_GET['submodel'] == strtolower($fitment[3]) 
 		   ) {
 
-			array_push($relevantFitments, array($fitment[4], $fitment[5]));
+			array_push($relevantFitments, array('SKU' => $fitment[4], 'LOC' => $fitment[5]));
 		}
 	}
 
