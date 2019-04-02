@@ -1,4 +1,0 @@
-#!/bin/sh
-ip link set $INTERFACE up
-ip addr add 10.10.0.1 dev $INTERFACE
-ip route add 10.10.0.0/24 dev $INTERFACE

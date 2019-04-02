@@ -1,2 +1,0 @@
-#!/bin/sh
-GIT_WORK_TREE=/srv/htdocs/atvpc.com git checkout -f
