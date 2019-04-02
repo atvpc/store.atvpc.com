@@ -1,4 +1,4 @@
-# store.atvpc.com
+# store.atvpc.com (:construction: Work In Progress / Alpha)
 
 ATVPC Specific changes to Magento 2. Current setup: 
 
@@ -6,4 +6,6 @@ ATVPC Specific changes to Magento 2. Current setup:
   * [Porto](https://themeforest.net/item/porto-ultimate-responsive-magento-theme/9725864) Magento Theme
   * [Product Parts Finder](https://amasty.com/product-parts-finder-for-magento-2.html) by Amasty
 
-**NOTE:** this repo does not track the default files that come from a base install of the above; only our specific changes are included
+### NOTE:
+The base install files from Magento, Porto, and the Product Parts Finder are a dependancy. This repo only 
+tracks our specific changes, which overwrite the aforementioned.
