@@ -28,7 +28,7 @@ require(['jquery'], function( $ ) {
 		if ($("#finder-1--4 option:selected").val() !== 0) {
 			setTimeout(function(){
 				update_fitments();
-			}, 2000);
+			}, 1000);
 		}
 	});
 });
