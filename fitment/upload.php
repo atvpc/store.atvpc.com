@@ -3,7 +3,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// Grab Magento's DB config 
+// Grab Magento's DB config
 $conf = include '../app/etc/env.php';
 $conf = $conf['db']['connection']['default']; // remove the extra unneeded conf settings
 
@@ -34,6 +34,10 @@ function validateValues($csvArr) {
 	$models = $pdo->query('SELECT DISTINCT name FROM amasty_finder_value WHERE dropdown_id = 3 AND name != "Model" AND name != ""')->fetchAll(PDO::FETCH_COLUMN);
 	$submodels = $pdo->query('SELECT DISTINCT name FROM amasty_finder_value WHERE dropdown_id = 4 AND name != "--" AND name != ""')->fetchAll(PDO::FETCH_COLUMN);
 
+	$makes = array_map('strtolower', $makes);
+	$models = array_map('strtolower', $models);
+	$submodels = array_map('strtolower', $submodels);
+
 	$errors = array();
 	foreach ($csvArr as $i=>$vehicle) {
 		$i++; // to display correct line number to end user
@@ -47,21 +51,21 @@ function validateValues($csvArr) {
 			if (in_array($year, $years) === FALSE) {
 				$errors[] = "<em>Line $i Year Column</em> - <strong>&quot;$year&quot;</strong> isn't in Amasty Parts Finder";
 			}
-			
-			if (in_array($make, $makes) === FALSE) {
+
+			if (in_array(strtolower($make), $makes) === FALSE) {
 				$errors[] = "<em>Line $i Make Column</em> - <strong>&quot;$make&quot;</strong> isn't in Amasty Parts Finder";
 			}
 
-			if (in_array($model, $models) === FALSE) {
+			if (in_array(strtolower($model), $models) === FALSE) {
 				$errors[] = "<em>Line $i Model Column</em> - <strong>&quot;$model&quot;</strong> isn't in Amasty Parts Finder";
 			}
-			
-			if (in_array($submodel, $submodels) === FALSE) {
+
+			if (in_array(strtolower($submodel), $submodels) === FALSE) {
 				$errors[] = "<em>Line $i Submodel Column</em> - <strong>&quot;$submodel&quot;</strong> isn't in Amasty Parts Finder";
 			}
 		}
 	}
-	
+
 	if (sizeof($errors) > 0) {
 		echo "<h1>Error</h1>";
 		echo "<ul>";
