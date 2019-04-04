@@ -25,9 +25,10 @@ foreach ($makes as $make) {
 	$img = '/amasty/finder/images/' . $make . '/1.png';
 
 	$sql = 'UPDATE amasty_finder_value SET image=:img WHERE name=:make AND dropdown_id=2';
-	$pdo->prepare($sql)->execute(['img' => $img, 'make' => $make]);
+	$stmt = $pdo->prepare($sql);
+	$stmt->execute(['img' => $img, 'make' => $make]);
 
-	$count += $pdo->rowCount();
+	$count += $stmt->rowCount();
 }
 
 echo "Updated $count images";
