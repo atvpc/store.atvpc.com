@@ -36,6 +36,76 @@ include 'config.php';
  * FUNCTIONS
  ***********************************************************/ 
 
+function getVehiclePID($year, $make, $model, $submodel) {
+	/* returns the unique parent ID for a specific vehicle from 
+	 * Amasty's part finder plugin
+	 * 
+	 * The SQL DB table has relationships stored in a single table,
+	 * so the "name" column might be either a Year, Make, Model, 
+	 * or Submodel. This also causes a lot of duplicates: duplicate
+	 * makes for every year in the DB
+	 * 
+	 * There's a single ID for each specific {Year, Make, Model, 
+	 * Submodel} that's used in other tables. It's stored as the 
+	 * Submodel's ID, but getting to that point is convoluted:
+	 *   - Get the ID of the Year
+	 *   - Match Makes with name = ? and PID = Year ID
+	 *   - Match Models with name = ? and PID = Make ID
+	 *   - Get ID from Submodel with name = ? and PID = Model ID
+	 */ 
+	global $pdo;
+
+	$stmt = <<< ENDSQL
+SELECT value_id FROM amasty_finder_value WHERE name=:submodel AND parent_id IN (
+  SELECT value_id AS parent_id FROM amasty_finder_value WHERE name=:model AND parent_id IN (
+    SELECT value_id AS parent_id FROM amasty_finder_value WHERE name=:make AND parent_id IN (
+      SELECT value_id AS parent_id FROM amasty_finder_value WHERE name=:year
+    )
+  )
+)
+ENDSQL;
+
+	$stmt = $pdo->prepare($stmt);
+	$stmt->execute(['year' => $year, 'make' => $make, 'model' => $model, 'submodel' => $submodel]);
+	return $stmt->fetchAll(PDO::FETCH_COLUMN);
+}
+
+function validateVehicle($year, $make, $model, $submodel) {
+	/* helper function to make sure there's a match for 
+	 * a specific {Year, Make, Model, Submodel} combo.
+	 * 
+	 * There should always be exactly one match as 
+	 * getVehiclePID() should return a unique PID. 
+	 * 
+	 * getVehiclePID()'s code normally would be in this
+	 * function, but validateSKU() needs the same logic,
+	 * so this helps reduce lines of code
+	 */ 
+	$matches = getVehiclePID($year, $make, $model, $submodel);
+	if (sizeOf($matches) == 1) return true;
+	else return false;
+}
+
+function validateSKU($year, $make, $model, $submodel, $sku) {
+/* validates a SKU goes with a specific fitment combo. 
+ * 
+ * SKUs are stored seperately from fitments. The fitments 
+ * table has a unique value_id that's used to reference an 
+ * exact {Year, Make, Model, Submodel} combo. 
+ */ 
+
+	global $pdo;
+	$vehicle_pid = getVehiclePID($year, $make, $model, $submodel);
+	$stmt = 'SELECT * FROM amasty_finder_map WHERE value_id=:vehicle_pid AND sku=:sku';
+
+	$stmt = $pdo->prepare($stmt);
+	$stmt->execute(['vehicle_pid' => $vehicle_pid[0], 'sku' => $sku]);
+	$matches = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+	if (sizeOf($matches) > 0) return true;
+	else return false;
+}
+
 function validateValues($csvArr) {
 	global $pdo;
 	$years = $pdo->query('SELECT DISTINCT name FROM amasty_finder_value WHERE dropdown_id = 1 AND name != "Year" AND name != ""')->fetchAll(PDO::FETCH_COLUMN);
