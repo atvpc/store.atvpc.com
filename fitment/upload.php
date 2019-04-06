@@ -76,7 +76,7 @@ function printErrors($errors) {
 			 '<table>';
 		foreach ($errors as $error) {
 			echo '<tr><th>Line #<th><th>Message</th></tr>' .
-			echo '<tr>' .
+				 '<tr>' .
 				 '	<td>'. $error['line'] .'<td>' .
 				 '	<td>'. $error['msg'];
 
