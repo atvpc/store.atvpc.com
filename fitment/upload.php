@@ -89,14 +89,11 @@ function printErrors($errors) {
 			if (isset($error['debug'])) {
 				echo '<br><br>'.
 					 '<strong>DEBUG HELP:</strong><br>' .
-					 '<table cellspacing="10">' .
-					 '<tr><th>Year</th><th>Make</th><th>Model</th><th>Submodel</th></tr>' .
-					 '<tr>';
+					 '<table cellspacing="10"><tr>';
 
-				foreach ($error['debug'] as $element) {
-					echo '<td>'. $element .'</td>';
-				}
-
+				foreach ($error['debug'] as $key=>$element) echo '<th>'. $key .'</th>'; 
+				echo '</tr><tr>';
+				foreach ($error['debug'] as $key=>$element) echo '<td>'. $element .'</td>';
 				echo '</tr></table>';
 			}
 		}
@@ -159,25 +156,30 @@ function validateCSV($csvArr) {
 		$i++; // to display correct line number to end user
 
 		if (sizeof($vehicle) != 6) {
-			$errors[] = array('line' => $i,
-							  'msg'  => 'Wrong number of columns in CSV ('. sizeof($vehicle) .' vs. 6 cols)',
-							  'hint' => 'look for extra commas'
+			$errors[] = array(
+							'line'  => $i,
+							'msg'   => 'Wrong number of columns in CSV ('. sizeof($vehicle) .' vs. 6 cols)',
+							'hint'  => 'look for extra commas',
+							'debug' => $vehicle
 						);
 		}
 		else {
 			list($year, $make, $model, $submodel, $sku, $null) = $vehicle;
 
 			if (validateVehicle($year, $make, $model, $submodel) === false) {
-				$errors[] = array('line'  => $i,
-								  'msg'   => 'Amasty does not have this specific Year, Make, Model, Submodel combination',
-								  'hint'  => 'Check for spelling or capitalization. Most errors involve the submodel',
-								  'debug' => array($year, $make, $model, $submodel)
-			 					 );
+				$errors[] = array(
+								'line'  => $i,
+								'msg'   => 'Amasty does not have this specific Year, Make, Model, Submodel combination',
+								'hint'  => 'Check for spelling or capitalization. Most errors involve the submodel',
+								'debug' => array('Year' => $year, 'Make' => $make, 'Model' => $model, 'Submodel' => $submodel)
+			 					);
 			}
 			else if (validateSKU($year, $make, $model, $submodel, $sku) === false) {
-				$errors[] = array('line' => $i,
-								  'msg'  => 'Amasty does not have this SKU for this specific fitment {Year, Make, Model, Submodel}',
-								  'hint' => 'The fitment is correct and exists. The SKU might not be in Amasty or might be misspelled in the CSV'
+				$errors[] = array(
+								'line'  => $i,
+								'msg'   => 'Amasty does not have this SKU for this specific fitment {Year, Make, Model, Submodel}',
+								'hint'  => 'The fitment is correct and exists. The SKU might not be in Amasty or might be misspelled in the CSV',
+								'debug' => array('Year' => $year, 'Make' => $make, 'Model' => $model, 'Submodel' => $submodel, 'SKU' => $sku)
 								);
 			}
 		}
