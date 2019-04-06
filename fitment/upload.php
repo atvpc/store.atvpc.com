@@ -77,7 +77,7 @@ function printErrors($errors) {
 		foreach ($errors as $error) {
 			echo '<tr><th>Line #<th><th>Message</th></tr>' .
 				 '<tr>' .
-				 '	<td><h4>'. $error['line'] .'</h4><td>' .
+				 '	<td align="center"><h2>'. $error['line'] .'</h2><td>' .
 				 '	<td>'. $error['msg'];
 
 			if (isset($error['hint'])) {
