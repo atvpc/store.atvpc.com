@@ -73,7 +73,7 @@ ENDSQL;
 function printErrors($errors) {
 	if (sizeof($errors) > 0) {
 		echo '<h1>Error</h1>' .
-			 '<table>';
+			 '<table style="width: 100%">';
 		foreach ($errors as $error) {
 			echo '<tr><th>Line #<th><th>Message</th></tr>' .
 				 '<tr>' .
@@ -86,7 +86,7 @@ function printErrors($errors) {
 
 			if (isset($error['debug'])) {
 				echo '	<br><strong>DEBUG HELP:</strong><br>' .
-					 '<table>' .
+					 '<table style="width: 50%">' .
 					 '<tr><th>Year</th><th>Make</th><th>Model</th><th>Submodel</th></tr>' .
 					 '<tr>';
 
@@ -272,11 +272,6 @@ else {
 <html>
 <head>
   <title>CSV Fitment Location Upload</title>
-  <style>
-  table {
-	  width: 100%;
-  }
-  </style>
 </head>
 <body>
 <form method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>" enctype="multipart/form-data">
