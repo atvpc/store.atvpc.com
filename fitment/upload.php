@@ -70,6 +70,37 @@ ENDSQL;
 	return $stmt->fetchAll(PDO::FETCH_COLUMN);
 }
 
+function printErrors($errors) {
+	if (sizeof($errors) > 0) {
+		echo '<h1>Error</h1>' .
+			 '<table>';
+		foreach ($errors as $error) {
+			echo '<tr>' .
+				 '	<td>'. $error['line'] .'<td>' .
+				 '	<td>'. $error['msg'];
+
+			if (isset($error['hint'])) {
+				echo '	<br><strong>HINT:</strong> ' . $error['hint'];
+			}
+
+			if (isset($error['debug'])) {
+				echo '	<br><strong>DEBUG HELP:</strong><br>' .
+					 '<table>' .
+					 '<tr><th>Year</th><th>Make</th><th>Model</th><th>Submodel</th></tr>' .
+					 '<tr>';
+
+				foreach ($error['debug'] as $element) {
+					echo '<td>'. $element .'</td>';
+				}
+
+				echo '</tr></table>';
+			}
+		}
+		echo '</table>';
+		die();
+	}
+}
+
 function validateVehicle($year, $make, $model, $submodel) {
 	/* helper function to make sure there's a match for 
 	 * a specific {Year, Make, Model, Submodel} combo.
@@ -106,8 +137,9 @@ function validateSKU($year, $make, $model, $submodel, $sku) {
 	else return false;
 }
 
-function validateValues($csvArr) {
+function validateCSV($csvArr) {
 	global $pdo;
+/*
 	$years = $pdo->query('SELECT DISTINCT name FROM amasty_finder_value WHERE dropdown_id = 1 AND name != "Year" AND name != ""')->fetchAll(PDO::FETCH_COLUMN);
 	$makes = $pdo->query('SELECT DISTINCT name FROM amasty_finder_value WHERE dropdown_id = 2 AND name != "Make" AND name != ""')->fetchAll(PDO::FETCH_COLUMN);
 	$models = $pdo->query('SELECT DISTINCT name FROM amasty_finder_value WHERE dropdown_id = 3 AND name != "Model" AND name != ""')->fetchAll(PDO::FETCH_COLUMN);
@@ -116,57 +148,45 @@ function validateValues($csvArr) {
 	$makes = array_map('strtolower', $makes);
 	$models = array_map('strtolower', $models);
 	$submodels = array_map('strtolower', $submodels);
+*/
 
 	$errors = array();
 	foreach ($csvArr as $i=>$vehicle) {
 		$i++; // to display correct line number to end user
 
 		if (sizeof($vehicle) != 6) {
-			$errors[] = "<em>Line $i</em> - Wrong number of columns in CSV (given: ". sizeof($vehicle) .", expected: 6)";
+			$errors[] = array('line' => $i,
+							  'msg'  => 'Wrong number of columns in CSV ('. sizeof($vehicle) .' vs. 6 cols)',
+							  'hint' => 'look for extra commas'
+						);
 		}
 		else {
-			list($year, $make, $model, $submodel, $null, $null) = $vehicle;
+			list($year, $make, $model, $submodel, $sku, $null) = $vehicle;
 
-			if (in_array($year, $years) === FALSE) {
-				$errors[] = "<em>Line $i Year Column</em> - <strong>&quot;$year&quot;</strong> isn't in Amasty Parts Finder";
-			}
-
-			if (in_array(strtolower($make), $makes) === FALSE) {
-				$errors[] = "<em>Line $i Make Column</em> - <strong>&quot;$make&quot;</strong> isn't in Amasty Parts Finder";
-			}
-
-			if (in_array(strtolower($model), $models) === FALSE) {
-				$errors[] = "<em>Line $i Model Column</em> - <strong>&quot;$model&quot;</strong> isn't in Amasty Parts Finder";
-			}
-
-			if (in_array(strtolower($submodel), $submodels) === FALSE) {
-				$errors[] = "<em>Line $i Submodel Column</em> - <strong>&quot;$submodel&quot;</strong> isn't in Amasty Parts Finder";
+			if (validateSKU($year, $make, $model, $submodel, $sku) === false) {
+				if (validateVehicle($year, $make, $model, $submodel) === false) {
+					$errors[] = array('line'  => $i,
+									  'msg'   => 'Amasty does not have this specific Year, Make, Model, Submodel combination',
+									  'hint'  => 'Check for spelling or capitalization. Most errors involve the submodel',
+									  'debug' => array($year, $make, $model, $submodel)
+									);
+				} 
+				else {
+					$errors[] = array('line' => $i,
+									  'msg'  => 'Amasty does not have this SKU for this specific fitment {Year, Make, Model, Submodel}',
+									  'hint' => 'The fitment is correct and exists. The SKU might not be in Amasty or might be misspelled in the CSV'
+									);
+				}
 			}
 		}
 	}
 
-	if (sizeof($errors) > 0) {
-		echo "<h1>Error</h1>";
-		echo "<ul>";
-		foreach ($errors as $error) {
-			echo "<li>$error";
-		}
-		echo "</ul>";
-		die();
-	}
+	printErrors($errors);
 }
 
 function parseCsv($file) {
 	// Parse CSV into Array
 	$fitments = array_map('str_getcsv', file($file));
-
-	// Make sure there's 6 columns
-	if (sizeof($fitments[0]) != 6) {
-		echo "<h1>Error</h1>";
-		echo "Wrong number of columns in CSV. In order, the columns should be:";
-		echo "<em>Year, Make, Model, Submodel, SKU, Fitment Location</em>";
-		die();
-	}
 
 	// Remove CSV header if present
 	if ($fitments[0][0] == "Year") {
@@ -203,7 +223,7 @@ if ( isset($_POST['submit']) && $_POST['submit'] == 'Upload') {
 
 	$oldcsv = parseCsv("fitments.csv");
 	$newcsv = parseCsv($_FILES['csvFile']['tmp_name']);
-	validateValues($newcsv);
+	validateCSV($newcsv);
 
 	$messages = array();
 
