@@ -91,8 +91,14 @@ function printErrors($errors) {
 					 '<strong>DEBUG HELP:</strong><br>' .
 					 '<table cellspacing="10"><tr>';
 
-				foreach ($error['debug'] as $key=>$element) echo '<th>'. $key .'</th>'; 
+				foreach ($error['debug'] as $key=>$element) {
+					if (is_numeric($key)) {
+						$key = 'Column ' . $key;
+					}
+					echo '<th>'. $key .'</th>'; 
+				}
 				echo '</tr><tr>';
+
 				foreach ($error['debug'] as $key=>$element) echo '<td>'. $element .'</td>';
 				echo '</tr></table>';
 			}
