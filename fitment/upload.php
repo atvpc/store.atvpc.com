@@ -109,6 +109,26 @@ function printErrors($errors) {
 	}
 }
 
+function validateSingleFitment($name) {
+	/* Sees if a specific element of vehicle fitment exists 
+	 * In otherwords, is the given Year, Make, Model, or 
+	 * Submodel in the DB?
+	 * 
+	 * The SQL DB table has relationships stored in a single table,
+	 * so the "name" column might be either a Year, Make, Model, 
+	 * or Submodel
+	 */ 
+	global $pdo;
+
+	$stmt = 'SELECT * FROM amasty_finder_value WHERE UPPER(name)=UPPER(:name)';
+
+	$stmt = $pdo->prepare($stmt);
+	$stmt->execute(['name' => $name]);
+
+	if (sizeOf( $stmt->fetchAll(PDO::FETCH_COLUMN) ) > 0) return true;
+	else return false;
+}
+
 function validateVehicle($year, $make, $model, $submodel) {
 	/* helper function to make sure there's a match for 
 	 * a specific {Year, Make, Model, Submodel} combo.
@@ -147,16 +167,6 @@ function validateSKU($year, $make, $model, $submodel, $sku) {
 
 function validateCSV($csvArr) {
 	global $pdo;
-/*
-	$years = $pdo->query('SELECT DISTINCT name FROM amasty_finder_value WHERE dropdown_id = 1 AND name != "Year" AND name != ""')->fetchAll(PDO::FETCH_COLUMN);
-	$makes = $pdo->query('SELECT DISTINCT name FROM amasty_finder_value WHERE dropdown_id = 2 AND name != "Make" AND name != ""')->fetchAll(PDO::FETCH_COLUMN);
-	$models = $pdo->query('SELECT DISTINCT name FROM amasty_finder_value WHERE dropdown_id = 3 AND name != "Model" AND name != ""')->fetchAll(PDO::FETCH_COLUMN);
-	$submodels = $pdo->query('SELECT DISTINCT name FROM amasty_finder_value WHERE dropdown_id = 4 AND name != "--" AND name != ""')->fetchAll(PDO::FETCH_COLUMN);
-
-	$makes = array_map('strtolower', $makes);
-	$models = array_map('strtolower', $models);
-	$submodels = array_map('strtolower', $submodels);
-*/
 
 	$errors = array();
 	foreach ($csvArr as $i=>$vehicle) {
@@ -174,12 +184,29 @@ function validateCSV($csvArr) {
 			list($year, $make, $model, $submodel, $sku, $null) = $vehicle;
 
 			if (validateVehicle($year, $make, $model, $submodel) === false) {
-				$errors[] = array(
+				$fitmentErr = array();
+				if (validateSingleFitment($year) === false)     $fitmentErr[] = 'Year';
+				if (validateSingleFitment($make) === false)     $fitmentErr[] = 'Make';
+				if (validateSingleFitment($model) === false)    $fitmentErr[] = 'Model';
+				if (validateSingleFitment($submodel) === false) $fitmentErr[] = 'Submodel';
+
+				if (sizeof($fitmentErr) > 0){
+					$errors[] = array(
+								'line' => $i,
+								'msg'  => 'Amasty does not have the given ' . implode(', ', $fitmentErr) . ' in the parts finder yet',
+								'hint' => 'Check for typos or add the missing fitment to Amasty',
+								'debug' => array('Year' => $year, 'Make' => $make, 'Model' => $model, 'Submodel' => $submodel)
+								);
+				}
+				else {
+					$errors[] = array(
 								'line'  => $i,
-								'msg'   => 'Amasty does not have this specific Year, Make, Model, Submodel combination',
-								'hint'  => 'Check for spelling or capitalization. Most errors involve the submodel',
+								'msg'   => 'Amasty does not have this specific fitment combination. ' .
+								           'Individually, the year, make, model and submodel are correct, but not combined as a vehicle',
+								'hint'  => 'Make sure this combination has been added to the Amasty parts finder',
 								'debug' => array('Year' => $year, 'Make' => $make, 'Model' => $model, 'Submodel' => $submodel)
 			 					);
+				}
 			}
 			else if (validateSKU($year, $make, $model, $submodel, $sku) === false) {
 				$errors[] = array(
