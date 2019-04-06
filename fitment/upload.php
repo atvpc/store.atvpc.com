@@ -88,7 +88,8 @@ function printErrors($errors) {
 
 			if (isset($error['debug'])) {
 				echo '<br><br>'.
-					 '<strong>DEBUG HELP:</strong><br>' .
+					 '<h3>CSV DEBUG DUMP:</h3><br>' .
+					 '<em>This is how I interpreted the CSV file. Make sure it matches what you expected:</em><br>' .
 					 '<table cellspacing="10"><tr>';
 
 				foreach ($error['debug'] as $key=>$element) {
