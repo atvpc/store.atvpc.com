@@ -164,20 +164,18 @@ function validateCSV($csvArr) {
 		else {
 			list($year, $make, $model, $submodel, $sku, $null) = $vehicle;
 
-			if (validateSKU($year, $make, $model, $submodel, $sku) === false) {
-				if (validateVehicle($year, $make, $model, $submodel) === false) {
-					$errors[] = array('line'  => $i,
-									  'msg'   => 'Amasty does not have this specific Year, Make, Model, Submodel combination',
-									  'hint'  => 'Check for spelling or capitalization. Most errors involve the submodel',
-									  'debug' => array($year, $make, $model, $submodel)
-									);
-				} 
-				else {
-					$errors[] = array('line' => $i,
-									  'msg'  => 'Amasty does not have this SKU for this specific fitment {Year, Make, Model, Submodel}',
-									  'hint' => 'The fitment is correct and exists. The SKU might not be in Amasty or might be misspelled in the CSV'
-									);
-				}
+			if (validateVehicle($year, $make, $model, $submodel) === false) {
+				$errors[] = array('line'  => $i,
+								  'msg'   => 'Amasty does not have this specific Year, Make, Model, Submodel combination',
+								  'hint'  => 'Check for spelling or capitalization. Most errors involve the submodel',
+								  'debug' => array($year, $make, $model, $submodel)
+			 					 );
+			}
+			else if (validateSKU($year, $make, $model, $submodel, $sku) === false) {
+				$errors[] = array('line' => $i,
+								  'msg'  => 'Amasty does not have this SKU for this specific fitment {Year, Make, Model, Submodel}',
+								  'hint' => 'The fitment is correct and exists. The SKU might not be in Amasty or might be misspelled in the CSV'
+								);
 			}
 		}
 	}
