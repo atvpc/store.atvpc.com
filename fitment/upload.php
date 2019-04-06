@@ -77,16 +77,19 @@ function printErrors($errors) {
 		foreach ($errors as $error) {
 			echo '<tr><th>Line #<th><th>Message</th></tr>' .
 				 '<tr>' .
-				 '	<td>'. $error['line'] .'<td>' .
+				 '	<td><h4>'. $error['line'] .'</h4><td>' .
 				 '	<td>'. $error['msg'];
 
 			if (isset($error['hint'])) {
-				echo '	<br><strong>HINT:</strong> ' . $error['hint'];
+				echo '<br><br>' .
+					 '<strong>HINT:</strong><br>' . 
+					 $error['hint'];
 			}
 
 			if (isset($error['debug'])) {
-				echo '	<br><strong>DEBUG HELP:</strong><br>' .
-					 '<table style="width: 50%">' .
+				echo '<br><br>'.
+					 '<strong>DEBUG HELP:</strong><br>' .
+					 '<table cellspacing="10">' .
 					 '<tr><th>Year</th><th>Make</th><th>Model</th><th>Submodel</th></tr>' .
 					 '<tr>';
 
