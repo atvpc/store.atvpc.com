@@ -1,7 +1,14 @@
 <?php
+/* 
+ * DEBUG
+ ***********************************************************/ 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+
+/* 
+ * DATABASE CONNECTION
+ ***********************************************************/ 
 
 // Grab Magento's DB config
 $conf = include '../app/etc/env.php';
@@ -19,13 +26,15 @@ try {
      throw new \PDOException($e->getMessage(), (int)$e->getCode());
 }
 
-// add the local upload password
-/* not tracked in repo, sample format:
- * <?php
- * $conf['upload_password'] = 'your password here';
- * ?>
- */ 
+// add the local upload password; this is not tracked 
+// in this repo, sample format:
+//   <?php 
+//   $conf['upload_password'] = 'your password here';
 include 'config.php'; 
+
+/* 
+ * FUNCTIONS
+ ***********************************************************/ 
 
 function validateValues($csvArr) {
 	global $pdo;
