@@ -56,10 +56,10 @@ function getVehiclePID($year, $make, $model, $submodel) {
 	global $pdo;
 
 	$stmt = <<< ENDSQL
-SELECT value_id FROM amasty_finder_value WHERE name=:submodel AND parent_id IN (
-  SELECT value_id AS parent_id FROM amasty_finder_value WHERE name=:model AND parent_id IN (
-    SELECT value_id AS parent_id FROM amasty_finder_value WHERE name=:make AND parent_id IN (
-      SELECT value_id AS parent_id FROM amasty_finder_value WHERE name=:year
+SELECT value_id FROM amasty_finder_value WHERE UPPER(name)=UPPER(:submodel) AND parent_id IN (
+  SELECT value_id AS parent_id FROM amasty_finder_value WHERE UPPER(name)=UPPER(:model) AND parent_id IN (
+    SELECT value_id AS parent_id FROM amasty_finder_value WHERE UPPER(name)=UPPER(:make) AND parent_id IN (
+      SELECT value_id AS parent_id FROM amasty_finder_value WHERE UPPER(name)=UPPER(:year)
     )
   )
 )
