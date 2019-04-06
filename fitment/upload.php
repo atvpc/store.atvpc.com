@@ -75,6 +75,7 @@ function printErrors($errors) {
 		echo '<h1>Error</h1>' .
 			 '<table>';
 		foreach ($errors as $error) {
+			echo '<tr><th>Line #<th><th>Message</th></tr>' .
 			echo '<tr>' .
 				 '	<td>'. $error['line'] .'<td>' .
 				 '	<td>'. $error['msg'];
@@ -273,6 +274,11 @@ else {
 <html>
 <head>
   <title>CSV Fitment Location Upload</title>
+  <style>
+  table {
+	  width: 100%;
+  }
+  </style>
 </head>
 <body>
 <form method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>" enctype="multipart/form-data">
