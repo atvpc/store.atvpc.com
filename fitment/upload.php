@@ -14,7 +14,7 @@ error_reporting(E_ALL);
 $conf = include '../app/etc/env.php';
 $conf = $conf['db']['connection']['default']; // remove the extra unneeded conf settings
 
-$dsn = "mysql:host=" . $conf['host'] . ";dbname=" . $conf['dbname'];
+$dsn = "mysql:host=" . $conf['host'] . ";dbname=" . $conf['dbname'] . ';charset=utf8';
 $options = [
     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -121,7 +121,6 @@ function validateSingleFitment($name) {
 	global $pdo;
 
 	$stmt = 'SELECT * FROM amasty_finder_value WHERE UPPER(name)=UPPER(:name)';
-
 	$stmt = $pdo->prepare($stmt);
 	$stmt->execute(['name' => $name]);
 
@@ -181,6 +180,7 @@ function validateCSV($csvArr) {
 						);
 		}
 		else {
+			$vehicle = array_map('trim', $vehicle);
 			list($year, $make, $model, $submodel, $sku, $null) = $vehicle;
 
 			if (validateVehicle($year, $make, $model, $submodel) === false) {
