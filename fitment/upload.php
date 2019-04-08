@@ -73,12 +73,15 @@ ENDSQL;
 function printErrors($errors) {
 	if (sizeof($errors) > 0) {
 		echo '<h1>Error</h1>' .
-			 '<table style="width: 100%">';
+		     '<table style="width: 100%; border-collapse: collapse">' .
+		     '<tr style="width: 100%; background-color: #ddd; border-bottom: 3px double black">' .
+		     '	<th>CSV Row / Line</th><th>Message</th>' .
+		     '</tr>';
+
 		foreach ($errors as $error) {
-			echo '<tr><th>Line #<th><th>Message</th></tr>' .
-				 '<tr>' .
-				 '	<td align="center"><h2>'. $error['line'] .'</h2><td>' .
-				 '	<td>'. $error['msg'];
+			echo '<tr style="border-bottom: 1px solid black">' .
+			     '	<td align="center" style="border-right: 1px dotted black"><h2><em>'. $error['line'] .'</em></h2></td>' .
+			     '	<td style="padding: 1em">'. $error['msg'];
 
 			if (isset($error['hint'])) {
 				echo '<br><br>' .
@@ -101,8 +104,10 @@ function printErrors($errors) {
 				echo '</tr><tr>';
 
 				foreach ($error['debug'] as $key=>$element) echo '<td>'. $element .'</td>';
+
 				echo '</tr></table>';
 			}
+			echo '</tr>';
 		}
 		echo '</table>';
 		die();
