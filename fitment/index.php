@@ -46,10 +46,7 @@ if (is_numeric($_GET['year']) === FALSE || $_GET['year'] < 1970 || $_GET['year']
 
 $_GET = array_map('strtolower', $_GET);
 
-$relevantFitments = array();
-
-$stmt = 'SELECT sku AS SKU,location AS LOC FROM fitment_locations WHERE year=:year AND UPPER(make)=UPPER(:make) AND UPPER(model)=UPPER(:model) AND UPPER(submodel)=UPPER(:submodel)';
-
+$stmt = 'SELECT sku AS SKU, location AS LOC FROM fitment_locations WHERE year=:year AND UPPER(make)=UPPER(:make) AND UPPER(model)=UPPER(:model) AND UPPER(submodel)=UPPER(:submodel)';
 $stmt = $pdo->prepare($stmt);
 $stmt->execute(array(
 				'year' => $_GET['year'], 
@@ -57,7 +54,6 @@ $stmt->execute(array(
 				'model' => $_GET['model'], 
 				'submodel' => $_GET['submodel']
 				));
-$matches = $stmt->fetchAll(PDO::FETCH_COLUMN);
-
+$matches = $stmt->fetchAll();
 echo json_encode($matches);
 ?>
