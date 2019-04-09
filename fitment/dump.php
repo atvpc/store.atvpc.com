@@ -26,17 +26,29 @@ try {
      throw new \PDOException($e->getMessage(), (int)$e->getCode());
 }
 
+function dump_vehicles() {
+	global $pdo;
+
+	$stmt = 'SELECT year.name AS year, make.name AS make, model.name AS model, submodel.name AS submodel ' .
+		'FROM amasty_finder_value AS year '.
+		'INNER JOIN amasty_finder_value AS make ON make.parent_id = year.value_id '.
+		'INNER JOIN amasty_finder_value AS model ON model.parent_id = make.value_id '.
+		'INNER JOIN amasty_finder_value AS submodel ON submodel.parent_id = model.value_id '.
+		'WHERE submodel.dropdown_id = 4 AND submodel.name != "Submodel"';
+
+	$stmt = $pdo->prepare($stmt);
+	$stmt->execute();
+	return $stmt->fetchAll();
+}
 
 function dump_fitment_locations() {
 	global $pdo;
 
-	$stmt = 'SELECT * FROM fitment_locations';
+	$stmt = 'SELECT year,make,model,submodel,sku,location FROM fitment_locations';
 	$stmt = $pdo->prepare($stmt);
 	$stmt->execute();
 
-	$matches = $stmt->fetchAll();
-
-	return $matches;
+	return $stmt->fetchAll();
 }
 
 function print_table($array) {
@@ -60,6 +72,19 @@ function print_table($array) {
 	echo "</table>";
 }
 
+if (isset($_GET['dump']) === false) $_GET['dump'] = false;
 
-print_table( dump_fitment_locations() );
-?>
+switch ($_GET['dump']) {
+	case 'vehicles':
+		print_table( dump_vehicles() );
+		break;
+	case 'fitments':
+		print_table( dump_fitment_locations() );
+		break;
+	default:
+		?>
+		<ul>
+			<li><a href="dump.php?dump=vehicles">All Vehicles in Amasty</a>
+			<li><a href="dump.php?dump=fitments">All Fitment Locations</a>
+		</ul>
+<?php } ?>
