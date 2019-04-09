@@ -31,7 +31,7 @@ function dump_fitment_locations() {
 	global $pdo;
 
 	$stmt = 'SELECT * FROM fitment_locations';
-	$stmt = $pdo->prepare($stmt)
+	$stmt = $pdo->prepare($stmt);
 	$stmt->execute();
 
 	$matches = $stmt->fetchAll();
@@ -41,11 +41,20 @@ function dump_fitment_locations() {
 
 function print_table($array) {
 	echo "<table>";
+
+	echo "<tr>";
+	foreach (array_keys($array[0]) as $key) {
+		echo "<th>" . $key . "</th>";
+	}
+	echo "</tr>";
+
 	foreach ($array as $row) {
 		echo "<tr>";
+
 		foreach ($row as $col) {
 			echo "<td>" . $col . "</td>";
 		}
+
 		echo "</tr>";
 	}
 	echo "</table>";
