@@ -281,19 +281,19 @@ if ( isset($_POST['submit']) && $_POST['submit'] == 'Upload') {
 						'submodel' => $submodel, 
 						'sku' => $sku
 						));
-		$matches = $stmt->fetchAll(PDO::FETCH_COLUMN);
+		$matches = $stmt->fetchAll();
 
 		if (sizeof($matches) > 0) {
-			if (strtoupper($matches['location']) == strtoupper($loc) ) {
+			if (strtoupper($matches[0]['location']) == strtoupper($loc) ) {
 				$messages[] = "<em>Line " . ($i + 1) . "</em> - Duplicate entry removed, already in Database";
 			}
 			else {
 				$messages[] = "<em>Line " . ($i + 1) . "</em> - Overwrote old fitment location <strong>" . 
-							  $matches['location'] ."</strong> with <strong>". $loc ."</strong>";
+							  $matches[0]['location'] ."</strong> with <strong>". $loc ."</strong>";
 
 				$stmt = 'UPDATE fitment_locations SET location=:location WHERE id=:id';
 				$stmt = $pdo->prepare($stmt);
-				$stmt->execute([ 'location' => $loc, 'id' => $matches['id'] ]);
+				$stmt->execute([ 'location' => $loc, 'id' => $matches[0]['id'] ]);
 			}
 		}
 		else {
