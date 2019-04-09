@@ -264,39 +264,44 @@ if ( isset($_POST['submit']) && $_POST['submit'] == 'Upload') {
 		die();
 	}
 
-	$oldcsv = parseCsv("fitments.csv");
 	$newcsv = parseCsv($_FILES['csvFile']['tmp_name']);
 	validateCSV($newcsv);
 
 	$messages = array();
 
 	foreach ($newcsv as $i=>$newfit) {
-		list($nyear, $nmake, $nmodel, $nsubmodel, $nsku, $nloc) = $newfit;
+		list($year, $make, $model, $submodel, $sku, $loc) = $newfit;
 
-		foreach ($oldcsv as $o=>$oldfit) {
-			list($oyear, $omake, $omodel, $osubmodel, $osku, $oloc) = $oldfit;
+		$stmt = 'SELECT id,location FROM fitment_locations WHERE year=:year AND UPPER(make)=UPPER(:make) AND UPPER(model)=UPPER(:model) AND UPPER(submodel)=UPPER(:submodel) AND UPPER(sku)=UPPER(:sku)';
+		$stmt = $pdo->prepare($stmt);
+		$stmt->execute(array(
+						'year' => $year, 
+						'make' => $make, 
+						'model' => $model, 
+						'submodel' => $submodel, 
+						'sku' => $sku
+						));
+		$matches = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
-			if ($nyear == $oyear && $nmake == $omake && $nmodel == $omodel && $nsubmodel == $osubmodel && $nsku == $osku) {
-				if ($nloc == $oloc) {
-					unset($newcsv[$i]);
-					$messages[] = "<em>Line " . ($i + 1) . "</em> - Duplicate entry removed, already in CSV";
-					break;
-				}
-				else {
-					unset($oldcsv[$o]);
-					$messages[] = "<em>Line " . ($i + 1) . "</em> - Overwrote old fitment location <strong>$oloc</strong> with <strong>$nloc</strong>";
-					break;
-				}
+		if (sizeof($matches) > 0) {
+			if (strtoupper($matches['location']) == strtoupper($loc) ) {
+				$messages[] = "<em>Line " . ($i + 1) . "</em> - Duplicate entry removed, already in Database";
+			}
+			else {
+				$messages[] = "<em>Line " . ($i + 1) . "</em> - Overwrote old fitment location <strong>" . 
+							  $matches['location'] ."</strong> with <strong>". $loc ."</strong>";
+
+				$stmt = 'UPDATE fitment_locations SET location=:location WHERE id=:id';
+				$stmt = $pdo->prepare($stmt);
+				$stmt->execute([ 'location' => $loc, 'id' => $matches['id'] ]);
 			}
 		}
+		else {
+			$stmt = "INSERT INTO fitment_locations (year, make, model, submodel, sku, location) VALUES (:year, :make, :model, :submodel, :sku, :location)";
+			$stmt= $pdo->prepare($stmt);
+			$stmt->execute(['year' => $year, 'make' => $make, 'model' => $model, 'submodel' => $submodel, 'sku' => $sku, 'location' => $loc]);
+		}
 	}
-
-	$writecsv = array_merge($oldcsv, $newcsv);
-	$fh = fopen('fitments.csv', 'wa+');
-	foreach ($writecsv as $line) {
-		fputcsv($fh, $line);
-	}
-	fclose($fh);
 
 	echo "<h1>Successfully Wrote to CSV</h1>";
 
