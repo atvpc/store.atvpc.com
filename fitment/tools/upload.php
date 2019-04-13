@@ -11,7 +11,7 @@ error_reporting(E_ALL);
  ***********************************************************/ 
 
 // Grab Magento's DB config
-$conf = include '../app/etc/env.php';
+$conf = include '/srv/htdocs/store.atvpc.com/app/etc/env.php';
 $conf = $conf['db']['connection']['default']; // remove the extra unneeded conf settings
 
 $dsn = "mysql:host=" . $conf['host'] . ";dbname=" . $conf['dbname'] . ';charset=utf8';
@@ -25,12 +25,6 @@ try {
 } catch (\PDOException $e) {
      throw new \PDOException($e->getMessage(), (int)$e->getCode());
 }
-
-// add the local upload password; this is not tracked 
-// in this repo, sample format:
-//   <?php 
-//   $conf['upload_password'] = 'your password here';
-include 'config.php'; 
 
 /* 
  * FUNCTIONS
@@ -242,12 +236,6 @@ function parseCsv($file) {
 
 
 if ( isset($_POST['submit']) && $_POST['submit'] == 'Upload') {
-	if ( hash('sha256', $_POST['password']) != hash('sha256', $conf['upload_password']) ) {
-		echo "<h1>Error</h1>";
-		echo "Invalid password";
-		die();
-	}
-
 	if ( isset($_FILES['csvFile']['tmp_name']) ) {
 		$fh = finfo_open(FILEINFO_MIME);
 		$mimetype = finfo_file($fh, $_FILES['csvFile']['tmp_name']);
@@ -327,11 +315,6 @@ else {
     <div>
 		<label for="csvFile">CSV File:</label><br>
 		<input type="file" name="csvFile">
-	</div>
-
-	<div>
-		<label for="password">Upload Password:</label><br>
-		<input type="password" name="password"> 
 	</div>
 
 	<div>

@@ -11,7 +11,7 @@ error_reporting(E_ALL);
  ***********************************************************/ 
 
 // Grab Magento's DB config
-$conf = include '../app/etc/env.php';
+$conf = include '/srv/htdocs/store.atvpc.com/app/etc/env.php';
 $conf = $conf['db']['connection']['default']; // remove the extra unneeded conf settings
 
 $dsn = "mysql:host=" . $conf['host'] . ";dbname=" . $conf['dbname'] . ';charset=utf8';

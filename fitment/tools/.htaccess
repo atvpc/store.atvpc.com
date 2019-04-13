@@ -1,0 +1,4 @@
+AuthType Basic
+AuthName "ATVPC Upload Area"
+AuthUserFile /srv/secrets/store.atvpc.com/etc/apache2/htpasswd
+Require valid-user
