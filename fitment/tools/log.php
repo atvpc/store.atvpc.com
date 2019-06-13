@@ -36,7 +36,7 @@ function validate_date($date) {
 		return false;
 	}
 	else {
-		return checkdate($tempDate[1], $tempDate[2], $tempDate[0]);
+		return checkdate($tmpDate[1], $tmpDate[2], $tmpDate[0]);
 	}
 }
 
@@ -106,9 +106,11 @@ else {
 </head>
 <body>
 <form method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>" enctype="multipart/form-data">
-    <div>
+    <div style="display: inline-block">
 		<label for="start_date">Start Date:</label><br>
 		<input type="date" name="start_date">
+	</div>
+	<div style="display: inline-block">
 		<label for="end_date">End Date:</label><br>
 		<input type="date" name="end_date">
 	</div>
