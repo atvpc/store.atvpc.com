@@ -44,13 +44,13 @@ function validate_date($date) {
 
 if ( isset($_POST['submit']) && $_POST['submit'] == 'Show Log') {
 	if (isset($_POST['start_date']) && isset($_POST['end_date'])) {
-		if (validate_date($_POST['start_date'])) {
+		if (validate_date($_POST['start_date']) === false) {
 			echo "<h1>Error</h1>";
 			echo $_POST['start_date'] . " is not a valid start date";
 			die();
 		}
 
-		if (validate_date($_POST['end_date'])) {
+		if (validate_date($_POST['end_date']) === false) {
 			echo "<h1>Error</h1>";
 			echo $_POST['end_date'] . " is not a valid end date";
 			die();
