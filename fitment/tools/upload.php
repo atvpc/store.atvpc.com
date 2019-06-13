@@ -279,13 +279,13 @@ if ( isset($_POST['submit']) && $_POST['submit'] == 'Upload') {
 				$messages[] = "<em>Line " . ($i + 1) . "</em> - Overwrote old fitment location <strong>" . 
 							  $matches[0]['location'] ."</strong> with <strong>". $loc ."</strong>";
 
-				$stmt = 'UPDATE fitment_locations SET location=:location, log_user=:user, log_date=CURRENT_TIMESTAMP WHERE id=:id';
+				$stmt = 'UPDATE fitment_locations SET location=:location, log_user=:log_user, log_date=CURRENT_TIMESTAMP WHERE id=:id';
 				$stmt = $pdo->prepare($stmt);
 				$stmt->execute([ 'location' => $loc, 'log_user' => $_SERVER['PHP_AUTH_USER'], 'id' => $matches[0]['id'] ]);
 			}
 		}
 		else {
-			$stmt = "INSERT INTO fitment_locations (year, make, model, submodel, sku, location, log_user) VALUES (:year, :make, :model, :submodel, :sku, :location, :user)";
+			$stmt = "INSERT INTO fitment_locations (year, make, model, submodel, sku, location, log_user) VALUES (:year, :make, :model, :submodel, :sku, :location, :log_user)";
 			$stmt= $pdo->prepare($stmt);
 			$stmt->execute(['year' => $year, 'make' => $make, 'model' => $model, 'submodel' => $submodel, 'sku' => $sku, 'location' => $loc, 'log_user' => $_SERVER['PHP_AUTH_USER']]);
 		}
