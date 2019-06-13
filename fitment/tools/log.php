@@ -31,7 +31,8 @@ try {
  ***********************************************************/ 
 
 function validate_date($date) {
-	$tmpDate = explode('-', $date);
+	$tmpDate = array_map('intval', explode('-', $date));
+
 	if (count($tmpDate) != 3) {
 		return false;
 	}
