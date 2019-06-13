@@ -65,16 +65,13 @@ if ( isset($_POST['submit']) && $_POST['submit'] == 'Show Log') {
 		$matches = $stmt->fetchAll();
 
 		if (sizeof($matches) > 0) {
-			echo "<table><tr>";
-			echo "<th>User</th><th>Date</th><th>SKU</th><th>Fitment Location</th><th>Vehicle</th>";
-			echo "</tr>";
+			echo '<table style="width: 100%; border-collapse: collapse"><tr style="width: 100%; background-color: #ddd; border-bottom: 3px double black">';
+			echo '<th>User</th><th>Date</th><th>SKU</th><th>Fitment Location</th><th>Vehicle</th>';
+			echo '</tr>';
 			foreach ($matches as $match) {
-				echo "<tr>";
+				echo '<tr style="border-bottom: 1px solid black">';
 				echo "<td>" . $match['log_user'] . "</td>";
-
-				$time = strtotime($match['log_date']);
-				$date = date("m/d/y g:i A", $time);
-				echo "<td>" . $date . "</td>";
+				echo '<td style="border-right: 1px dotted black">' . date("m/d/y g:i A", strtotime($match['log_date']) . '</td>';
 
 				echo "<td>" . $match['sku'] . "</td>";
 				echo "<td>" . $match['location'] . "</td>";
