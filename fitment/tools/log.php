@@ -66,21 +66,18 @@ if ( isset($_POST['submit']) && $_POST['submit'] == 'Show Log') {
 
 		if (sizeof($matches) > 0) {
 			echo '<table style="width: 100%; border-collapse: collapse"><tr style="width: 100%; background-color: #ddd; border-bottom: 3px double black">';
-			echo '<th>User</th><th>Date</th><th>Fitment Location</th><th>SKU</th><th>Vehicle</th>';
+			echo '<th>User</th><th>Date</th><th>Fitment Location</th><th>SKU</th><th>Year</th><th>Make</th><th>Model</th><th>Submodel</th>';
 			echo '</tr>';
 			foreach ($matches as $match) {
 				echo '<tr style="border-bottom: 1px solid black">';
 				echo '<td style="background-color: #eee;">' . $match['log_user'] . '</td>';
-				echo '<td style="background-color: #eee; border-right: 1px dotted black">' . date('m/d/y g:i A', strtotime($match['log_date'])) . '</td>';
-				echo "<td>" . $match['location'] . "</td>";
-				echo "<td>" . $match['sku'] . "</td>";
-				echo '<td><table style="padding-right: 2em;">';
-				echo "	<tr>";
-				echo "		<th>Year</th><th>Make</th><th>Model</th><th>Submodel</th>";
-				echo "	</tr><tr>";
-				echo "		<td>". $match['year'] ."</td><td>". $match['make'] ."</td><td>". $match['model'] ."</td><td>". $match['submodel'] ."</td>";
-				echo "	</tr>";
-				echo "</table></td>";
+				echo '<td style="background-color: #eee; border-right: 1px dotted black">' . date('m/d/y g:i A', strtotime($match['log_date'] . ' UTC')) . '</td>';
+				echo '<td style="text-align: center">' . $match['location'] . '</td>';
+				echo '<td style="text-align: center">' . $match['sku'] . '</td>';
+				echo '<td style="text-align: center">' . $match['year'] . '</td>';
+				echo '<td style="text-align: center">' . $match['make'] . '</td>';
+				echo '<td>' . $match['model'] .'</td>';
+				echo '<td>' . $match['submodel'] . '</td>';
 				echo "</tr>";
 			}
 			echo "</table>";
