@@ -71,7 +71,11 @@ if ( isset($_POST['submit']) && $_POST['submit'] == 'Show Log') {
 			foreach ($matches as $match) {
 				echo "<tr>";
 				echo "<td>" . $match['log_user'] . "</td>";
-				echo "<td>" . $match['log_date'] . "</td>";
+
+				$time = strtotime($match['log_date']);
+				$date = date("m/d/y g:i A", $time);
+				echo "<td>" . $date . "</td>";
+
 				echo "<td>" . $match['sku'] . "</td>";
 				echo "<td>" . $match['location'] . "</td>";
 				echo "<td><table>";
