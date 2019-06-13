@@ -56,7 +56,7 @@ if ( isset($_POST['submit']) && $_POST['submit'] == 'Show Log') {
 			die();
 		}
 
-		$stmt = 'SELECT log_user,log_date,year,make,model,submodel,sku,location FROM fitment_locations WHERE log_date BETWEEN :start_date AND :end_date ORDER BY log_date';
+		$stmt = 'SELECT log_user,log_date,year,make,model,submodel,sku,location FROM fitment_locations WHERE log_date BETWEEN :start_date AND :end_date ORDER BY log_date DESC';
 		$stmt = $pdo->prepare($stmt);
 		$stmt->execute(array(
 						':start_date' => $_POST['start_date'], 
@@ -71,7 +71,7 @@ if ( isset($_POST['submit']) && $_POST['submit'] == 'Show Log') {
 			foreach ($matches as $match) {
 				echo '<tr style="border-bottom: 1px solid black">';
 				echo "<td>" . $match['log_user'] . "</td>";
-				echo '<td style="border-right: 1px dotted black">' . date("m/d/y g:i A", strtotime($match['log_date']) . '</td>';
+				echo '<td style="border-right: 1px dotted black">' . date('m/d/y g:i A', strtotime($match['log_date'])) . '</td>';
 
 				echo "<td>" . $match['sku'] . "</td>";
 				echo "<td>" . $match['location'] . "</td>";
