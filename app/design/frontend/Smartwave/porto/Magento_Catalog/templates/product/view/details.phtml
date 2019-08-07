@@ -14,10 +14,24 @@
     $product_config = $porto_helper->getConfig('porto_settings/product');
     $static_block_tab = $product_config['custom_block_next_tab'];
     $custom_block = $this->getLayout()->createBlock('Magento\Cms\Block\Block');
-	/* ATVPC DEBUG START */
-    /* $_product = $block->getProduct(); */
+	/* ATVPC DEBUG
+     *   REPLACED:
+     *     $_product = $block->getProduct();
+     *   WITH:
+     *     <below two lines>
+     */
     $_product = \Magento\Framework\App\ObjectManager::getInstance()
         ->get(\Magento\Framework\Registry::class)->registry('product');
+	/* ATVPC DEBUG
+	 *   REPLACED:
+	 *     <everything from here to EOF that calls "$block->getProduct()">
+	 *   WITH:
+	 *    $_product
+     */
+
+    /* further reading:
+     * https://magento.stackexchange.com/questions/279835/uncaught-error-call-to-a-member-function-getdata-on-null
+     */
     $page_type = $_product->getData('product_page_type');
     if(!$page_type)
         $page_type = isset($_config['product_page_type'])?$_config['product_page_type']:'';
