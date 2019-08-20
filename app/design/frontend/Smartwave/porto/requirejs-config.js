@@ -1,10 +1,15 @@
 var config = {
-	shim: {
-		jquery: { exports: '$' },
-		'Smartwave_Megamenu/js/sw_megamenu': { deps: ['jquery'] },
-		'owl.carousel/owl.carousel.min': { deps: ['jquery'] },
-		'js/jquery.stellar.min': { deps: ['jquery'] },
-		'js/jquery.parallax.min': { deps: ['jquery'] }
-	}
+   shim: {
+	jquery: { exports: '$' },
+	'Smartwave_Megamenu/js/sw_megamenu': { deps: ['jquery'] },
+	'owl.carousel/owl.carousel.min': { deps: ['jquery'] },
+	'js/jquery.stellar.min': { deps: ['jquery'] },
+	'js/jquery.parallax.min': { deps: ['jquery'] }
+    },
+    map: {
+       '*': {
+            'MSP_ReCaptcha/js/reCaptcha': "js/reCaptcha",
+        }
+    },
 };
 
