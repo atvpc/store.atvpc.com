@@ -16,7 +16,6 @@
         <remove src="jquery.js" />
         <remove src="jquery-ui.js" />
         <remove src="fancybox/js/jquery.fancybox.js" />
-        <script src="js/store-hours.js" />
 	<script src="js/parts-finder-fitment.js" />
     </head>
 </page>
